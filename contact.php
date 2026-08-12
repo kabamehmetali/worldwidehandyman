@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle       = 'Contact Your GTA Handyman';
 $metaDescription = 'Contact Worldwide Handyman — serving Toronto and the Greater Toronto Area. Call, text, email or send a message and get a free quote.';
 $canonicalPath   = 'contact';
-$ogImage         = 'assets/img/work-condo.jpg';
+$ogImage         = 'assets/img/contact-hero.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Contact']];
 $schemas         = [[
     '@type'      => 'ContactPage',
@@ -60,7 +60,7 @@ $mapKey = setting('google_maps_api_key');
 $mapQuery = setting('map_query', 'Toronto, ON, Canada');
 ?>
 
-<section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-condo.jpg')) ?>');">
+<section class="page-banner page-banner-portrait contact-banner" style="background-image: url('<?= esc(base_url('assets/img/contact-hero.png')) ?>');">
     <div class="container">
         <h1>Contact Me</h1>
         <?= breadcrumb_html($breadcrumbs) ?>
@@ -75,7 +75,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
                     <div class="ci-icon"><i class="fa-solid fa-phone"></i></div>
                     <div>
                         <h6>Call or Text</h6>
-                        <a href="<?= esc(phone_link_href()) ?>"><?= esc(setting('phone')) ?></a>
+                        <a class="ci-detail" href="<?= esc(phone_link_href()) ?>"><?= esc(setting('phone')) ?></a>
                     </div>
                 </div>
             </div>
@@ -84,7 +84,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
                     <div class="ci-icon"><i class="fa-solid fa-envelope"></i></div>
                     <div>
                         <h6>Email</h6>
-                        <a href="mailto:<?= esc(setting('email')) ?>"><?= esc(setting('email')) ?></a>
+                        <a class="ci-detail" href="mailto:<?= esc(setting('email')) ?>"><?= esc(setting('email')) ?></a>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
                     <div class="ci-icon"><i class="fa-solid fa-earth-americas"></i></div>
                     <div>
                         <h6>Service Area</h6>
-                        <p><?= esc(setting('service_area')) ?></p>
+                        <p class="ci-detail"><?= esc(setting('service_area')) ?></p>
                     </div>
                 </div>
             </div>
@@ -102,7 +102,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
                     <div class="ci-icon"><i class="fa-solid fa-clock"></i></div>
                     <div>
                         <h6>Hours</h6>
-                        <p><?= esc(setting('hours_weekday')) ?><br><?= esc(setting('hours_weekend')) ?></p>
+                        <p class="ci-detail"><?= esc(setting('hours_weekday')) ?><br><?= esc(setting('hours_weekend')) ?></p>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
                 <div class="ww-form-card">
                     <span class="section-eyebrow"><i class="fa-solid fa-envelope-open-text"></i> Send a Message</span>
                     <h2 class="section-title mb-2">How Can I Help?</h2>
-                    <p class="mb-4">Questions, feedback or anything else — drop me a line below. For job pricing, the <a href="<?= esc(base_url('quote')) ?>">quote form</a> is the fastest route.</p>
+                    <p class="contact-form-intro mb-4">Questions, feedback or anything else — drop me a line below. For job pricing, the <a href="<?= esc(base_url('quote')) ?>">quote form</a> is the fastest route.</p>
 
                     <?= flash_render() ?>
                     <?php foreach ($errors as $error): ?>
@@ -159,7 +159,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
             <div class="col-lg-5 reveal">
                 <div class="quote-side-card">
                     <h4 class="mb-3">Prefer a Quote?</h4>
-                    <p>If you already know what needs doing, skip straight to the quote form — it asks exactly the right questions and I can usually price the job from your first message.</p>
+                    <p class="contact-quote-copy">If you already know what needs doing, skip straight to the quote form — it asks exactly the right questions and I can usually price the job from your first message.</p>
                     <a class="btn btn-gold mt-2" href="<?= esc(base_url('quote')) ?>"><i class="fa-solid fa-file-signature me-2"></i>Get a Free Quote</a>
                     <img src="<?= esc(base_url('assets/img/work-kitchen-1.jpg')) ?>" alt="Handyman at work" class="mt-4">
                 </div>

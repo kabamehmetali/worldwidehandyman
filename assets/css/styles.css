@@ -667,8 +667,14 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 /* CTA band --------------------------------------------------------------- */
 .cta-band {
     position: relative;
+    display: flex;
+    align-items: center;
     background-size: cover;
-    background-position: center;
+    /* Keep the portrait subject's head in view while the CTA remains a
+       taller background band. The inner row keeps its existing layout in the
+       vertical centre of the band. */
+    background-position: center top;
+    min-height: 560px;
     padding: 5.5rem 0;
     color: #fff;
 }
@@ -676,7 +682,13 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(10, 20, 40, .95) 25%, rgba(10, 20, 40, .72));
+    /* Leave the portrait and workshop clear on the left, then fade smoothly
+       into the existing dark treatment behind the right-side CTA content. */
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .16) 0%,
+        rgba(10, 20, 40, .38) 42%,
+        rgba(10, 20, 40, .72) 72%,
+        rgba(10, 20, 40, .72) 100%);
 }
 .cta-band .container { position: relative; z-index: 1; }
 .cta-band h2 { color: #fff; font-size: clamp(1.8rem, 3.4vw, 2.6rem); font-weight: 800; }
@@ -721,6 +733,70 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .page-banner .breadcrumb-item, .page-banner .breadcrumb-item a { color: rgba(255,255,255,.75); font-size: .9rem; }
 .page-banner .breadcrumb-item.active { color: var(--ww-gold-light); }
 .page-banner .breadcrumb-item a:hover { color: var(--ww-gold-light); }
+/* Services hero: the custom panoramic room scene fills the fixed banner while
+   keeping the furniture-moving action prominent on the right. */
+.page-banner.services-banner {
+    background-color: var(--ww-navy-dark);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.page-banner.services-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .84) 0%,
+        rgba(10, 20, 40, .72) 34%,
+        rgba(10, 20, 40, .30) 58%,
+        rgba(10, 20, 40, .08) 100%);
+}
+/* Service Areas hero: retain the full head on the right and keep the left
+   side dark enough for the title against the residential streetscape. */
+.page-banner.service-areas-banner { background-position: center top; }
+.page-banner.service-areas-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .86) 0%,
+        rgba(10, 20, 40, .68) 40%,
+        rgba(10, 20, 40, .30) 65%,
+        rgba(10, 20, 40, .16) 100%);
+}
+/* About hero: preserve the owner portrait while the darker workshop side
+   gives the heading a high-contrast, intentional home. */
+.page-banner.about-banner { background-position: center top; }
+.page-banner.about-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .86) 0%,
+        rgba(10, 20, 40, .70) 38%,
+        rgba(10, 20, 40, .34) 62%,
+        rgba(10, 20, 40, .14) 100%);
+}
+/* FAQ hero: the calm, dark left side supports the title while the planning
+   scene on the right stays clear and visible. */
+.page-banner.faq-banner { background-position: center top; }
+.page-banner.faq-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .68) 0%,
+        rgba(10, 20, 40, .50) 40%,
+        rgba(10, 20, 40, .24) 64%,
+        rgba(10, 20, 40, .08) 100%);
+}
+/* Contact hero: maintain a high-contrast title area while making the owner
+   clearly visible as he answers a customer call. */
+.page-banner.contact-banner { background-position: center top; }
+.page-banner.contact-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .48) 0%,
+        rgba(10, 20, 40, .32) 42%,
+        rgba(10, 20, 40, .16) 64%,
+        rgba(10, 20, 40, .06) 100%);
+}
+/* Quote hero: show the measuring action clearly while the dark kitchen wall
+   naturally supports the quote heading on the left. */
+.page-banner.quote-banner { background-position: center top; }
+.page-banner.quote-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .42) 0%,
+        rgba(10, 20, 40, .28) 42%,
+        rgba(10, 20, 40, .14) 64%,
+        rgba(10, 20, 40, .05) 100%);
+}
 /* Portrait variant — for banner photos where the subject's head sits near the
    top of the frame. `cover` scales these wide banners by width, so the head is
    drawn taller than the default 239px banner and gets cropped. Anchor to the
@@ -732,10 +808,30 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     justify-content: center;
     background-position: center top;
 }
+.page-banner.page-banner-portrait.services-banner {
+    background-position: center 23%;
+}
+.page-banner.page-banner-portrait.service-areas-banner {
+    background-position: center top;
+}
+.page-banner.page-banner-portrait.about-banner {
+    background-position: center top;
+}
+.page-banner.page-banner-portrait.contact-banner {
+    background-position: center top;
+}
+.page-banner.page-banner-portrait.quote-banner {
+    background-position: center top;
+}
 @media (max-width: 767.98px) {
     /* Narrow viewports scale the image by height instead, so the full frame is
        already visible — no extra height needed. */
     .page-banner.page-banner-portrait { min-height: 320px; }
+    .page-banner.page-banner-portrait.services-banner { background-position: 80% center; }
+    .page-banner.page-banner-portrait.service-areas-banner { background-position: 82% top; }
+    .page-banner.page-banner-portrait.about-banner { background-position: 82% top; }
+    .page-banner.page-banner-portrait.contact-banner { background-position: 80% top; }
+    .page-banner.page-banner-portrait.quote-banner { background-position: 80% top; }
 }
 
 /* About page ------------------------------------------------------------- */
@@ -869,9 +965,47 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     display: flex; align-items: center; justify-content: center;
     font-size: 1.2rem;
 }
-.contact-info-card h6 { margin-bottom: .2rem; }
-.contact-info-card p, .contact-info-card a { font-size: .93rem; margin: 0; color: var(--ww-text); }
-.contact-info-card a:hover { color: var(--ww-gold); }
+.contact-info-card > div:last-child { min-width: 0; }
+.contact-info-card h6 {
+    margin-bottom: .38rem;
+    color: #69758D;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+.contact-info-card .ci-detail {
+    display: block;
+    margin: 0;
+    color: var(--ww-navy);
+    font-size: .98rem;
+    font-weight: 650;
+    line-height: 1.5;
+    letter-spacing: -.01em;
+    overflow-wrap: anywhere;
+}
+.contact-info-card a.ci-detail { text-decoration: none; }
+.contact-info-card a.ci-detail:hover { color: var(--ww-gold); }
+.contact-form-intro {
+    max-width: 40rem;
+    margin-top: .9rem;
+    padding: .85rem 1rem;
+    border-left: 3px solid var(--ww-gold);
+    border-radius: 0 .65rem .65rem 0;
+    background: linear-gradient(90deg, rgba(245, 168, 0, .10), rgba(245, 168, 0, .025));
+    color: #4B5872;
+    font-size: .98rem;
+    line-height: 1.7;
+}
+.contact-form-intro a {
+    color: var(--ww-navy);
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(245, 168, 0, .75);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+.contact-form-intro a:hover { color: var(--ww-gold); }
 .map-wrap {
     border-radius: var(--ww-radius);
     overflow: hidden;
@@ -898,6 +1032,14 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     background: radial-gradient(circle, rgba(245,168,0,.25), transparent 70%);
 }
 .quote-side-card h4 { color: #fff; }
+.quote-side-card .contact-quote-copy {
+    margin-bottom: 1.4rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--ww-gold);
+    color: rgba(255, 255, 255, .84);
+    font-size: .98rem;
+    line-height: 1.72;
+}
 .quote-side-card .check-list i { color: var(--ww-gold-light); }
 .quote-side-card img { border-radius: 12px; }
 .response-note {

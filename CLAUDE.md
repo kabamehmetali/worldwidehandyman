@@ -24,6 +24,8 @@ Single DB `worldwidehandyman_db` (root, no password, host 127.0.0.1). Import/res
 
 Tables: `users` (admin auth), `settings` (key-value — all site config), `nav_links` (menu, `is_cta` renders as gold button), `pages` (custom pages served by `page.php?slug=`), `services`, `gallery`, `testimonials`, `faqs`, `quotes` (Get-a-Quote submissions, `sms_sent`/`sms_error` track Twilio), `contact_messages`.
 
+SEO landing-page tables: `seo_locations`, `seo_services`, `seo_service_locations` — see the SEO section below. `sql/schema.sql` creates these with `IF NOT EXISTS`, so re-running it resets the site content **without** destroying generated landing pages. To rebuild those three tables from scratch, run `sql/seo.sql` (drops and recreates them) then re-import `sql/seo-seed.sql`.
+
 ## Architecture
 
 - `includes/config.php` — DB constants, `APP_ROOT`, computes `BASE_URL` from DOCUMENT_ROOT (works at root or subdirectory), starts session, sets America/Toronto.
@@ -41,6 +43,59 @@ Tables: `users` (admin auth), `settings` (key-value — all site config), `nav_l
 - `admin/includes/helpers.php` — `handle_image_upload()` (finfo MIME check, 8 MB cap, lands in `assets/uploads/<subdir>/`), `delete_upload()` (only deletes inside `assets/uploads/`, so seeded `assets/img/` files are safe), `move_row()` (up/down reordering, whitelisted tables), `slugify()`.
 - List pages handle POST actions (toggle/move/delete) then redirect; `*-form.php` pages handle add/edit.
 - `admin/settings.php` — tabbed (general/contact/homepage/colors/integrations/account); each tab posts `section`. Twilio token field keeps the stored value when left blank; "Save & Send Test SMS" button verifies Twilio live.
+
+## SEO
+
+`includes/seo.php` is the SEO layer — canonical URLs, meta/Open Graph tags, JSON-LD, and all data access for the landing pages. It requires config/db/functions itself, so a page only needs `require_once __DIR__ . '/includes/seo.php';` at the top. `includes/header.php` requires it too.
+
+**Page-scoped variables**, set *before* requiring `includes/header.php`:
+
+| Variable | Purpose |
+|---|---|
+| `$pageTitle` | rendered as `{title} \| {site name}` |
+| `$pageTitleFull` | complete `<title>`, overrides `$pageTitle` |
+| `$metaDescription` | meta description |
+| `$canonicalPath` | site-relative path — **always set this on pages that take a query string** |
+| `$robots` | defaults to `index, follow` |
+| `$ogImage` / `$ogType` | social card image and type |
+| `$breadcrumbs` | `[['label' => 'Services', 'url' => 'services'], ['label' => 'TV Mounting']]` — drives both `breadcrumb_html()` and BreadcrumbList schema |
+| `$schemas` | extra JSON-LD nodes merged into the `@graph` |
+
+The header always emits `LocalBusiness` + `WebSite` + `WebPage` (+ `BreadcrumbList` when `$breadcrumbs` is set) as a single `@graph`. Pages add `Service`, `FAQPage`, `HowTo`, `ItemList`, `Person`, `ContactPage`, `ImageGallery` via `$schemas`. Builders: `schema_service()`, `schema_faq()`, `schema_item_list()`, `schema_breadcrumbs()`.
+
+`seo_query()` swallows "table doesn't exist" errors and returns `[]`, so the site still runs before `sql/seo.sql` has been imported.
+
+### Programmatic landing pages
+
+Three page types, all routed by `.htaccess` and all admin-editable:
+
+| URL | File | Table | Targets |
+|---|---|---|---|
+| `/handyman/{city}` | `location.php` | `seo_locations` | "handyman north york" |
+| `/services/{service}` | `service.php` | `seo_services` | "tv mounting toronto" |
+| `/services/{service}/{city}` | `service-location.php` | `seo_service_locations` | "tv mounting north york" |
+
+Hubs: `/services` (`services.php`) lists every service page; `/service-areas` (`service-areas.php`) lists every location grouped by region. Both are in the main nav, which is what gives the landing pages a crawl path. The footer carries a full location link strip.
+
+**A service × city page exists only where a `seo_service_locations` row exists.** Nothing is generated from the cross product. This is deliberate: auto-filling 26 services × 50 locations would publish 1,300 near-identical pages and read as doorway spam. `tier = 1` on a location and `is_pillar = 1` on a service mark the combinations worth writing by hand.
+
+The combo page renders only the pair's own copy (`intro`, `local_angle`, `common_jobs`, one FAQ) plus links up to the full service page and across to the city page — it never repeats the service body, so the URLs do not compete with each other.
+
+Content columns: plain-text fields (`intro`, `local_notes`, `pricing_notes`) render through `seo_paragraphs()`; `body_html` through `seo_safe_html()`, which strips everything outside `<h2> <h3> <h4> <p> <ul> <ol> <li> <strong> <em> <br>`; line-per-item fields (`neighbourhoods`, `common_jobs`, `jobs`) through `seo_lines()`; `faqs_json` / `process_json` through `seo_json_list()`.
+
+### Crawler files
+
+`/robots.txt` → `robots.php` and `/sitemap.xml` → `sitemap.php`, both generated so the URLs match whatever domain (or subfolder) the site is running under. Unmatched URLs rewrite to `404.php`, which returns a real 404 through `seo_not_found()`.
+
+### Admin
+
+Admin → **SEO** has Locations, Service Pages and Service × City, plus a **Settings → SEO** tab holding `site_url` (required before launch — everything canonical is built from it), verification tokens, GA4/GTM, and the LocalBusiness schema fields.
+
+`seo_aggregate_rating` is **off by default** and should stay off unless every testimonial is a real, evidenceable review — Google issues manual penalties for review markup it judges fabricated, and the seeded example testimonials would qualify.
+
+### Content rules
+
+Landing-page copy is written in **first person singular** ("I", never "we" or "our team") because the business is a sole proprietor. It must never claim licensed / insured / bonded / WSIB / certified / award-winning status, never quote prices, and never offer work requiring a licensed trade (panel wiring, gas, structural, roofing, HVAC) — swapping existing fixtures is fine, anything past that gets referred on. Canadian English throughout.
 
 ## Conventions
 

@@ -8,7 +8,7 @@ $faqs = db()->query(
 $pageTitle       = 'Handyman FAQ — Quotes, Pricing, Areas';
 $metaDescription = 'Frequently asked questions about Worldwide Handyman — service areas, quotes, pricing, working hours and more.';
 $canonicalPath   = 'faq';
-$ogImage         = 'assets/img/work-install.jpg';
+$ogImage         = 'assets/img/faq-hero.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'FAQ']];
 $schemas         = [schema_faq(array_map(static fn ($f) => [
     'q' => $f['question'], 'a' => $f['answer'],
@@ -17,7 +17,7 @@ $schemas         = [schema_faq(array_map(static fn ($f) => [
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-install.jpg')) ?>');">
+<section class="page-banner page-banner-portrait faq-banner" style="background-image: url('<?= esc(base_url('assets/img/faq-hero.png')) ?>');">
     <div class="container">
         <h1>Frequently Asked Questions</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

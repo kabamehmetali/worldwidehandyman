@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/footer-cta.php';
+
 // Prefer the service landing pages so the footer links somewhere useful;
 // fall back to the simple services table before they have been imported.
 $footerServices = [];

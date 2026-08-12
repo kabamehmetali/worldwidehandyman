@@ -36,7 +36,6 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
 <header class="hero" style="background-image: url('<?= esc(base_url(setting('hero_image'))) ?>');">
     <div class="container hero-inner">
         <div class="hero-content">
-            <span class="hero-eyebrow"><i class="fa-solid fa-location-dot"></i> <?= esc(setting('seo_home_title', 'Handyman in Toronto & the GTA')) ?></span>
             <h1 class="hero-title"><?= $heroTitle ?></h1>
             <p class="hero-sub"><?= esc(setting('hero_subtitle')) ?></p>
             <div class="d-flex flex-wrap gap-3">
@@ -262,26 +261,5 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
     </div>
 </section>
 <?php endif; ?>
-
-<!-- CTA band -->
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <h2><?= esc(setting('cta_band_title')) ?></h2>
-                <p><?= esc(setting('cta_band_subtitle')) ?></p>
-            </div>
-            <div class="col-lg-5">
-                <div class="d-flex flex-wrap align-items-center gap-4 justify-content-lg-end">
-                    <a class="cta-phone" href="<?= esc(phone_link_href()) ?>">
-                        <span class="icon-circle"><i class="fa-solid fa-phone"></i></span>
-                        <?= esc(setting('phone')) ?>
-                    </a>
-                    <a class="btn btn-gold btn-lg" href="<?= esc(base_url('quote')) ?>">Get a Free Quote</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

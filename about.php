@@ -4,7 +4,7 @@ require_once __DIR__ . '/includes/seo.php';
 $pageTitle       = 'About Sercan, Your GTA Handyman';
 $metaDescription = 'Meet Sercan — a professional handyman serving homeowners and businesses across the Greater Toronto Area with reliable, high-quality workmanship.';
 $canonicalPath   = 'about';
-$ogImage         = 'assets/img/sercan.jpg';
+$ogImage         = 'assets/img/about-hero.png';
 $ogType          = 'profile';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'About']];
 $schemas         = [[
@@ -21,7 +21,7 @@ $schemas         = [[
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url('assets/img/work-portrait.jpg')) ?>');">
+<section class="page-banner page-banner-portrait about-banner" style="background-image: url('<?= esc(base_url('assets/img/about-hero.png')) ?>');">
     <div class="container">
         <h1>About Me</h1>
         <?= breadcrumb_html($breadcrumbs) ?>
@@ -114,20 +114,6 @@ require __DIR__ . '/includes/header.php';
             <span class="value-pill"><i class="fa-solid fa-star"></i> Customer Satisfaction</span>
         </div>
         <div class="about-strip mt-5 reveal" style="background-image: url('<?= esc(base_url('assets/img/hero-about.jpg')) ?>');" role="img" aria-label="Sercan in front of the Toronto skyline"></div>
-    </div>
-</section>
-
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <h2>Let's take care of your to-do list</h2>
-                <p>One dependable professional for your home or business — from the first conversation to the finished job.</p>
-            </div>
-            <div class="col-lg-5 text-lg-end">
-                <a class="btn btn-gold btn-lg" href="<?= esc(base_url('quote')) ?>"><i class="fa-solid fa-file-signature me-2"></i>Get a Free Quote</a>
-            </div>
-        </div>
     </div>
 </section>
 

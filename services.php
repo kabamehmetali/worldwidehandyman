@@ -36,7 +36,7 @@ $legacyServices = $seoServices ? [] : db()->query(
 )->fetchAll();
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url('assets/img/work-bright-shop.jpg')) ?>');">
+<section class="page-banner page-banner-portrait services-banner" style="background-image: url('<?= esc(base_url('assets/img/services-hero-koltuk.png')) ?>');">
     <div class="container">
         <h1>Our Services</h1>
         <?= breadcrumb_html($breadcrumbs) ?>
@@ -136,19 +136,5 @@ $legacyServices = $seoServices ? [] : db()->query(
     </div>
 </section>
 <?php endif; ?>
-
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <h2>Not sure which service you need?</h2>
-                <p>Describe the job in plain words — I'll tell you exactly what it takes and what it costs. Quotes are always free.</p>
-            </div>
-            <div class="col-lg-5 text-lg-end">
-                <a class="btn btn-gold btn-lg" href="<?= esc(base_url('quote')) ?>"><i class="fa-solid fa-file-signature me-2"></i>Get a Free Quote</a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

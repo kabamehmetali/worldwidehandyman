@@ -15,7 +15,7 @@ $totalAreas  = array_sum(array_map('count', $byRegion));
 $pageTitle       = setting('seo_areas_title', 'Handyman Service Areas Across the GTA');
 $metaDescription = setting('seo_areas_description');
 $canonicalPath   = 'service-areas';
-$ogImage         = 'assets/img/work-condo.jpg';
+$ogImage         = 'assets/img/service-areas-hero-painting.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Service Areas']];
 
 $canonical = canonical_url($canonicalPath);
@@ -33,7 +33,7 @@ if ($totalAreas) {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url('assets/img/work-condo.jpg')) ?>');">
+<section class="page-banner page-banner-portrait service-areas-banner" style="background-image: url('<?= esc(base_url('assets/img/service-areas-hero-painting.png')) ?>');">
     <div class="container">
         <h1>Handyman Service Areas</h1>
         <?= breadcrumb_html($breadcrumbs) ?>
@@ -93,26 +93,6 @@ require __DIR__ . '/includes/header.php';
             <a href="<?= esc(base_url('contact')) ?>">Send me a message</a> or
             <a href="<?= esc(base_url('quote')) ?>">request a quote</a> — if I can get to you, I will.
         </p>
-    </div>
-</section>
-
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <h2>One handyman, the whole GTA</h2>
-                <p>From downtown condos to Durham and Halton subdivisions — same care, same clear pricing, same tidy finish.</p>
-            </div>
-            <div class="col-lg-5">
-                <div class="d-flex flex-wrap align-items-center gap-4 justify-content-lg-end">
-                    <a class="cta-phone" href="<?= esc(phone_link_href()) ?>">
-                        <span class="icon-circle"><i class="fa-solid fa-phone"></i></span>
-                        <?= esc(setting('phone')) ?>
-                    </a>
-                    <a class="btn btn-gold btn-lg" href="<?= esc(base_url('quote')) ?>">Get a Free Quote</a>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 

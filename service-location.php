@@ -274,24 +274,4 @@ require __DIR__ . '/includes/header.php';
 </section>
 <?php endif; ?>
 
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
-    <div class="container">
-        <div class="row align-items-center g-4">
-            <div class="col-lg-7">
-                <h2><?= esc($name) ?> in <?= esc($city) ?> — free quote</h2>
-                <p>Describe the job, add a photo if you can, and I will come back with a clear price. No obligation either way.</p>
-            </div>
-            <div class="col-lg-5">
-                <div class="d-flex flex-wrap align-items-center gap-4 justify-content-lg-end">
-                    <a class="cta-phone" href="<?= esc(phone_link_href()) ?>">
-                        <span class="icon-circle"><i class="fa-solid fa-phone"></i></span>
-                        <?= esc(setting('phone')) ?>
-                    </a>
-                    <a class="btn btn-gold btn-lg" href="<?= esc(base_url('quote')) ?>">Get a Free Quote</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <?php require __DIR__ . '/includes/footer.php'; ?>
