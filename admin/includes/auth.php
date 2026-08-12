@@ -7,6 +7,7 @@
 require_once dirname(__DIR__, 2) . '/includes/config.php';
 require_once dirname(__DIR__, 2) . '/includes/db.php';
 require_once dirname(__DIR__, 2) . '/includes/functions.php';
+require_once dirname(__DIR__, 2) . '/includes/seo.php';
 require_once __DIR__ . '/helpers.php';
 
 function admin_user(): ?array

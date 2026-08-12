@@ -1,25 +1,108 @@
 <?php
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/db.php';
-require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/seo.php';
 
-$pageTitle = $pageTitle ?? setting('tagline');
+/* ---------------------------------------------------------------- SEO vars
+   Pages set any of these before requiring this file — see includes/seo.php. */
+$siteName        = setting('site_name');
+$pageTitle       = $pageTitle ?? null;
+$pageTitleFull   = $pageTitleFull ?? null;
 $metaDescription = $metaDescription ?? setting('meta_description');
+$canonicalPath   = $canonicalPath ?? null;
+$robots          = $robots ?? 'index, follow';
+$ogType          = $ogType ?? 'website';
+$breadcrumbs     = $breadcrumbs ?? [];
+$schemas         = $schemas ?? [];
+
+$canonical = canonical_url($canonicalPath);
+
+if ($pageTitleFull !== null && $pageTitleFull !== '') {
+    $documentTitle = $pageTitleFull;
+} elseif ($pageTitle !== null && $pageTitle !== '') {
+    $documentTitle = $pageTitle . ' | ' . $siteName;
+} else {
+    $documentTitle = $siteName . ' | ' . strip_tags(setting('tagline'));
+}
+
+$ogImageUrl = site_url($ogImage ?? setting('seo_og_image', setting('hero_image')));
+
+// Max-length hints for rich results; harmless on pages that are noindex
+$robotsFull = $robots . ', max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+
+/* --------------------------------------------------------- JSON-LD graph */
+$schemaGraph = [schema_business(), schema_website(),
+    schema_webpage($canonical, $documentTitle, $metaDescription, $ogImageUrl, (bool) $breadcrumbs)];
+if ($breadcrumbs) {
+    $schemaGraph[] = schema_breadcrumbs($breadcrumbs, $canonical);
+}
+foreach ($schemas as $extraNode) {
+    if ($extraNode) {
+        $schemaGraph[] = $extraNode;
+    }
+}
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-CA">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= esc($pageTitle) ?> | <?= esc(setting('site_name')) ?></title>
+    <title><?= esc($documentTitle) ?></title>
     <meta name="description" content="<?= esc($metaDescription) ?>">
+    <link rel="canonical" href="<?= esc($canonical) ?>">
+    <meta name="robots" content="<?= esc($robotsFull) ?>">
+    <meta name="author" content="<?= esc(setting('seo_owner_name', 'Sercan')) ?>">
+    <meta name="theme-color" content="<?= esc(setting('color_primary', '#10203F')) ?>">
+
+    <!-- Local search signals -->
+    <meta name="geo.region" content="CA-<?= esc(setting('seo_region', 'ON')) ?>">
+    <meta name="geo.placename" content="<?= esc(setting('seo_locality', 'Toronto')) ?>">
+    <meta name="geo.position" content="<?= esc(setting('seo_geo_lat', '43.6532')) ?>;<?= esc(setting('seo_geo_lng', '-79.3832')) ?>">
+    <meta name="ICBM" content="<?= esc(setting('seo_geo_lat', '43.6532')) ?>, <?= esc(setting('seo_geo_lng', '-79.3832')) ?>">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="<?= esc($ogType) ?>">
+    <meta property="og:site_name" content="<?= esc($siteName) ?>">
+    <meta property="og:title" content="<?= esc($documentTitle) ?>">
+    <meta property="og:description" content="<?= esc($metaDescription) ?>">
+    <meta property="og:url" content="<?= esc($canonical) ?>">
+    <meta property="og:image" content="<?= esc($ogImageUrl) ?>">
+    <meta property="og:locale" content="en_CA">
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= esc($documentTitle) ?>">
+    <meta name="twitter:description" content="<?= esc($metaDescription) ?>">
+    <meta name="twitter:image" content="<?= esc($ogImageUrl) ?>">
+
+<?php if (setting('seo_google_verification') !== ''): ?>
+    <meta name="google-site-verification" content="<?= esc(setting('seo_google_verification')) ?>">
+<?php endif; ?>
+<?php if (setting('seo_bing_verification') !== ''): ?>
+    <meta name="msvalidate.01" content="<?= esc(setting('seo_bing_verification')) ?>">
+<?php endif; ?>
+
     <link rel="icon" type="image/png" href="<?= esc(base_url(setting('logo_icon'))) ?>">
+    <link rel="apple-touch-icon" href="<?= esc(base_url(setting('logo_icon'))) ?>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="<?= esc(base_url('assets/css/styles.css')) ?>?v=<?= @filemtime(APP_ROOT . '/assets/css/styles.css') ?>" rel="stylesheet">
+
+    <?= json_ld_block($schemaGraph) ?>
+
+<?php if (setting('gtm_id') !== ''): ?>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+    var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+    j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','<?= esc(setting('gtm_id')) ?>');</script>
+<?php elseif (setting('ga4_id') !== ''): ?>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= rawurlencode(setting('ga4_id')) ?>"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
+    gtag('js',new Date());gtag('config','<?= esc(setting('ga4_id')) ?>');</script>
+<?php endif; ?>
     <style>
         :root {
             --ww-navy: <?= esc(setting('color_primary', '#10203F')) ?>;
@@ -32,6 +115,10 @@ $metaDescription = $metaDescription ?? setting('meta_description');
     </style>
 </head>
 <body>
+<?php if (setting('gtm_id') !== ''): ?>
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= rawurlencode(setting('gtm_id')) ?>"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<?php endif; ?>
 
 <!-- Top bar -->
 <div class="topbar d-none d-md-block">

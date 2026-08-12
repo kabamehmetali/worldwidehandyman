@@ -67,7 +67,8 @@ function delete_upload(string $relativePath): void
 /** Re-sequence sort_order for a table after up/down moves. */
 function move_row(string $table, int $id, string $direction): void
 {
-    $allowed = ['services', 'gallery', 'testimonials', 'faqs', 'nav_links'];
+    $allowed = ['services', 'gallery', 'testimonials', 'faqs', 'nav_links',
+        'seo_locations', 'seo_services'];
     if (!in_array($table, $allowed, true)) {
         return;
     }

@@ -53,6 +53,11 @@ function admin_nav_item(string $file, string $icon, string $label, string $curre
             <?php admin_nav_item('faqs.php', 'fa-solid fa-circle-question', 'FAQs', $adminPage); ?>
             <?php admin_nav_item('pages.php', 'fa-solid fa-file-lines', 'Pages', $adminPage); ?>
 
+            <span class="admin-nav-section">SEO</span>
+            <?php admin_nav_item('seo-locations.php', 'fa-solid fa-location-dot', 'Locations', $adminPage); ?>
+            <?php admin_nav_item('seo-services.php', 'fa-solid fa-tags', 'Service Pages', $adminPage); ?>
+            <?php admin_nav_item('seo-combos.php', 'fa-solid fa-diagram-project', 'Service × City', $adminPage); ?>
+
             <span class="admin-nav-section">Site</span>
             <?php admin_nav_item('navigation.php', 'fa-solid fa-bars-staggered', 'Navigation', $adminPage); ?>
             <?php admin_nav_item('settings.php', 'fa-solid fa-gear', 'Settings', $adminPage); ?>

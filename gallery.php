@@ -1,22 +1,33 @@
 <?php
-$pageTitle = 'Gallery';
-$metaDescription = 'A look at Worldwide Handyman — recent work, projects and moments from around the Greater Toronto Area.';
-require __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/seo.php';
 
 $images = db()->query(
     'SELECT * FROM gallery WHERE is_active = 1 ORDER BY sort_order ASC, id ASC'
 )->fetchAll();
+
+$pageTitle       = 'Handyman Work Gallery — GTA Projects';
+$metaDescription = 'A look at Worldwide Handyman — recent work, projects and moments from around the Greater Toronto Area.';
+$canonicalPath   = 'gallery';
+$ogImage         = $images ? $images[0]['image_path'] : 'assets/img/work-modern-kitchen.jpg';
+$breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Gallery']];
+$schemas         = $images ? [[
+    '@type'           => 'ImageGallery',
+    '@id'             => canonical_url($canonicalPath) . '#gallery',
+    'name'            => 'Worldwide Handyman project gallery',
+    'associatedMedia' => array_map(static fn ($img) => [
+        '@type'      => 'ImageObject',
+        'contentUrl' => site_url($img['image_path']),
+        'name'       => $img['title'] !== '' ? $img['title'] : 'Handyman project photo',
+    ], array_slice($images, 0, 25)),
+]] : [];
+
+require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-modern-kitchen.jpg')) ?>');">
     <div class="container">
         <h1>Gallery</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= esc(base_url()) ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Gallery</li>
-            </ol>
-        </nav>
+        <?= breadcrumb_html($breadcrumbs) ?>
     </div>
 </section>
 

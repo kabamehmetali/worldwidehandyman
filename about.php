@@ -1,18 +1,30 @@
 <?php
-$pageTitle = 'About Me';
+require_once __DIR__ . '/includes/seo.php';
+
+$pageTitle       = 'About Sercan, Your GTA Handyman';
 $metaDescription = 'Meet Sercan — a professional handyman serving homeowners and businesses across the Greater Toronto Area with reliable, high-quality workmanship.';
+$canonicalPath   = 'about';
+$ogImage         = 'assets/img/sercan.jpg';
+$ogType          = 'profile';
+$breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'About']];
+$schemas         = [[
+    '@type'      => 'Person',
+    '@id'        => canonical_url('about') . '#owner',
+    'name'       => setting('seo_owner_name', 'Sercan'),
+    'jobTitle'   => 'Handyman, Owner and Operator',
+    'image'      => site_url('assets/img/sercan.jpg'),
+    'telephone'  => setting('phone_link') !== '' ? setting('phone_link') : setting('phone'),
+    'email'      => setting('email'),
+    'worksFor'   => ['@id' => site_url() . '#business'],
+    'areaServed' => ['@type' => 'AdministrativeArea', 'name' => 'Greater Toronto Area'],
+]];
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-portrait.jpg')) ?>');">
+<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url('assets/img/work-portrait.jpg')) ?>');">
     <div class="container">
         <h1>About Me</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= esc(base_url()) ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">About</li>
-            </ol>
-        </nav>
+        <?= breadcrumb_html($breadcrumbs) ?>
     </div>
 </section>
 

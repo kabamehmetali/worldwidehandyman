@@ -1,7 +1,16 @@
 <?php
-$footerServices = db()->query(
-    'SELECT title FROM services WHERE is_active = 1 ORDER BY sort_order ASC, id ASC LIMIT 6'
-)->fetchAll();
+// Prefer the service landing pages so the footer links somewhere useful;
+// fall back to the simple services table before they have been imported.
+$footerServices = [];
+foreach (array_slice(seo_service_pages(true), 0, 6) as $svc) {
+    $footerServices[] = ['title' => $svc['name'], 'url' => 'services/' . $svc['slug']];
+}
+if (!$footerServices) {
+    foreach (db()->query('SELECT title FROM services WHERE is_active = 1 ORDER BY sort_order ASC, id ASC LIMIT 6') as $row) {
+        $footerServices[] = ['title' => $row['title'], 'url' => 'services'];
+    }
+}
+$footerAreas = seo_locations();
 ?>
 <!-- Footer -->
 <footer class="site-footer">
@@ -38,8 +47,9 @@ $footerServices = db()->query(
                 <h5 class="footer-title">Popular Services</h5>
                 <ul class="footer-links">
                     <?php foreach ($footerServices as $fs): ?>
-                        <li><a href="<?= esc(base_url('services')) ?>"><?= esc($fs['title']) ?></a></li>
+                        <li><a href="<?= esc(base_url($fs['url'])) ?>"><?= esc($fs['title']) ?></a></li>
                     <?php endforeach; ?>
+                    <li><a href="<?= esc(base_url('services')) ?>"><strong>All services &rarr;</strong></a></li>
                 </ul>
             </div>
             <div class="col-lg-3 col-md-6">
@@ -53,6 +63,20 @@ $footerServices = db()->query(
             </div>
         </div>
     </div>
+    <?php if ($footerAreas): ?>
+        <div class="footer-areas">
+            <div class="container">
+                <h6>Handyman services across the Greater Toronto Area</h6>
+                <div class="footer-area-links">
+                    <?php foreach ($footerAreas as $area): ?>
+                        <a href="<?= esc(base_url('handyman/' . $area['slug'])) ?>">Handyman <?= esc($area['name']) ?></a>
+                    <?php endforeach; ?>
+                    <a class="fa-all" href="<?= esc(base_url('service-areas')) ?>">All areas &rarr;</a>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="footer-bottom">
         <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
             <span>&copy; <?= date('Y') ?> <?= esc(setting('site_name')) ?>. All rights reserved.</span>

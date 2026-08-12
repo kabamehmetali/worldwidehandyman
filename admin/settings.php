@@ -4,7 +4,7 @@ require_once dirname(__DIR__) . '/includes/twilio.php';
 require_admin();
 
 $activeTab = $_GET['tab'] ?? 'general';
-$validTabs = ['general', 'contact', 'homepage', 'colors', 'integrations', 'account'];
+$validTabs = ['general', 'contact', 'homepage', 'colors', 'seo', 'integrations', 'account'];
 if (!in_array($activeTab, $validTabs, true)) {
     $activeTab = 'general';
 }
@@ -70,6 +70,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         settings_save($colors);
         flash_set('success', 'Brand colors saved.');
+    } elseif ($section === 'seo') {
+        $pairs = $collect(['site_url', 'seo_home_title', 'seo_home_description', 'seo_og_image',
+            'seo_areas_title', 'seo_areas_description', 'seo_google_verification',
+            'seo_bing_verification', 'ga4_id', 'gtm_id', 'seo_business_type', 'seo_owner_name',
+            'seo_price_range', 'seo_payment_accepted', 'seo_street_address', 'seo_locality',
+            'seo_region', 'seo_postal_code', 'seo_country', 'seo_geo_lat', 'seo_geo_lng',
+            'seo_geo_radius_km', 'seo_founding_year', 'seo_sameas', 'seo_open_days',
+            'seo_open_time', 'seo_close_time', 'seo_robots_extra']);
+
+        // site_url is the canonical origin — keep only scheme and host
+        if (isset($pairs['site_url']) && $pairs['site_url'] !== '') {
+            $url = $pairs['site_url'];
+            if (!preg_match('~^https?://~i', $url)) {
+                $url = 'https://' . $url;
+            }
+            $parts = parse_url($url);
+            $pairs['site_url'] = !empty($parts['host'])
+                ? strtolower($parts['scheme'] ?? 'https') . '://' . $parts['host']
+                : '';
+            if ($pairs['site_url'] === '') {
+                flash_set('error', 'That site URL could not be read — enter it like https://worldwidehandyman.ca');
+            }
+        }
+        foreach (['seo_geo_lat', 'seo_geo_lng'] as $key) {
+            if (isset($pairs[$key]) && $pairs[$key] !== '' && !is_numeric($pairs[$key])) {
+                unset($pairs[$key]);
+                flash_set('error', 'Latitude and longitude must be numbers — that value was not saved.');
+            }
+        }
+        $pairs['seo_aggregate_rating'] = isset($_POST['seo_aggregate_rating']) ? '1' : '0';
+        settings_save($pairs);
+        flash_set('success', 'SEO settings saved.');
     } elseif ($section === 'integrations') {
         $pairs = $collect(['twilio_sid', 'twilio_from', 'twilio_to', 'google_maps_api_key', 'map_query']);
         // keep the stored token when the field is left blank
@@ -147,6 +179,7 @@ function tab_link(string $tab, string $icon, string $label, string $active): voi
     tab_link('contact', 'fa-solid fa-address-book', 'Contact Info', $activeTab);
     tab_link('homepage', 'fa-solid fa-house', 'Homepage', $activeTab);
     tab_link('colors', 'fa-solid fa-palette', 'Colors', $activeTab);
+    tab_link('seo', 'fa-solid fa-magnifying-glass-chart', 'SEO', $activeTab);
     tab_link('integrations', 'fa-solid fa-plug', 'SMS & Maps', $activeTab);
     tab_link('account', 'fa-solid fa-user-shield', 'Account', $activeTab);
     ?>
@@ -374,6 +407,195 @@ function tab_link(string $tab, string $icon, string $label, string $active): voi
                 <button class="btn btn-gold" type="submit"><i class="fa-solid fa-floppy-disk me-2"></i>Save Colors</button>
             </div>
         </div>
+    </form>
+</div>
+
+<?php elseif ($activeTab === 'seo'): ?>
+<?php
+$pageCounts = [
+    'locations' => (int) (db()->query('SELECT COUNT(*) FROM seo_locations WHERE is_published = 1')->fetchColumn() ?: 0),
+    'services'  => (int) (db()->query('SELECT COUNT(*) FROM seo_services WHERE is_published = 1')->fetchColumn() ?: 0),
+    'combos'    => (int) (db()->query('SELECT COUNT(*) FROM seo_service_locations WHERE is_published = 1')->fetchColumn() ?: 0),
+];
+$siteUrlSet = setting('site_url') !== '';
+?>
+<?php if (!$siteUrlSet): ?>
+    <div class="alert alert-warning">
+        <strong>Set your site URL before launch.</strong> Canonical tags, Open Graph images, the sitemap and
+        all structured data are built from it. Until it is filled in they fall back to whatever host the page
+        was requested on, which is fine locally but wrong in production.
+    </div>
+<?php endif; ?>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="admin-card text-center py-3 mb-0"><div class="h3 mb-0"><?= $pageCounts['locations'] ?></div><small class="text-muted">Location pages</small></div></div>
+    <div class="col-md-3"><div class="admin-card text-center py-3 mb-0"><div class="h3 mb-0"><?= $pageCounts['services'] ?></div><small class="text-muted">Service pages</small></div></div>
+    <div class="col-md-3"><div class="admin-card text-center py-3 mb-0"><div class="h3 mb-0"><?= $pageCounts['combos'] ?></div><small class="text-muted">Service × city pages</small></div></div>
+    <div class="col-md-3"><div class="admin-card text-center py-3 mb-0"><div class="h3 mb-0"><?= array_sum($pageCounts) + 8 ?></div><small class="text-muted">Indexable URLs</small></div></div>
+</div>
+
+<div class="admin-card">
+    <form method="post">
+        <?= csrf_field() ?>
+        <input type="hidden" name="section" value="seo">
+
+        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Site address &amp; indexing</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <label class="form-label">Site URL <span class="text-danger">*</span></label>
+                <input class="form-control" type="text" name="site_url" value="<?= esc(setting('site_url')) ?>" placeholder="https://worldwidehandyman.ca">
+                <div class="form-text">The live domain, scheme included. Used for canonical tags, the sitemap and structured data.</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Social Share Image</label>
+                <input class="form-control" type="text" name="seo_og_image" value="<?= esc(setting('seo_og_image')) ?>" placeholder="assets/img/hero-home.jpg">
+                <div class="form-text">Shown when a page is shared on Facebook, WhatsApp or X. Ideally 1200×630.</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Homepage Title <small class="text-muted fw-normal">(the site name is appended)</small></label>
+                <input class="form-control" type="text" name="seo_home_title" value="<?= esc(setting('seo_home_title')) ?>">
+                <div class="form-text">Also shown as the gold line above the hero heading.</div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Service Areas Page Title</label>
+                <input class="form-control" type="text" name="seo_areas_title" value="<?= esc(setting('seo_areas_title')) ?>">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Homepage Meta Description</label>
+                <textarea class="form-control" name="seo_home_description" rows="3"><?= esc(setting('seo_home_description')) ?></textarea>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Service Areas Meta Description</label>
+                <textarea class="form-control" name="seo_areas_description" rows="3"><?= esc(setting('seo_areas_description')) ?></textarea>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Extra robots.txt Lines <small class="text-muted fw-normal">(one directive per line — appended to the generated file)</small></label>
+                <textarea class="form-control font-monospace" name="seo_robots_extra" rows="3" style="font-size:.85rem;"><?= esc(setting('seo_robots_extra')) ?></textarea>
+                <div class="form-text">
+                    Live files:
+                    <a href="<?= esc(base_url('robots.txt')) ?>" target="_blank" rel="noopener">robots.txt</a> ·
+                    <a href="<?= esc(base_url('sitemap.xml')) ?>" target="_blank" rel="noopener">sitemap.xml</a>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Verification &amp; analytics</h6>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <label class="form-label">Google Search Console</label>
+                <input class="form-control" type="text" name="seo_google_verification" value="<?= esc(setting('seo_google_verification')) ?>" placeholder="verification token">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Bing Webmaster Tools</label>
+                <input class="form-control" type="text" name="seo_bing_verification" value="<?= esc(setting('seo_bing_verification')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">GA4 Measurement ID</label>
+                <input class="form-control" type="text" name="ga4_id" value="<?= esc(setting('ga4_id')) ?>" placeholder="G-XXXXXXXXXX">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Google Tag Manager ID</label>
+                <input class="form-control" type="text" name="gtm_id" value="<?= esc(setting('gtm_id')) ?>" placeholder="GTM-XXXXXXX">
+                <div class="form-text">If set, GTM is loaded instead of GA4.</div>
+            </div>
+        </div>
+
+        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Business details for Google</h6>
+        <p class="text-muted small">These feed the LocalBusiness structured data that powers the Google business panel and map results.</p>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <label class="form-label">Business Type</label>
+                <select class="form-select" name="seo_business_type">
+                    <?php foreach (['HomeAndConstructionBusiness' => 'Home & Construction Business',
+                                    'GeneralContractor' => 'General Contractor',
+                                    'HandymanService' => 'Handyman Service (HomeAndConstruction)',
+                                    'LocalBusiness' => 'Local Business (generic)'] as $value => $label): ?>
+                        <option value="<?= esc($value) ?>"<?= setting('seo_business_type') === $value ? ' selected' : '' ?>><?= esc($label) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Owner Name</label>
+                <input class="form-control" type="text" name="seo_owner_name" value="<?= esc(setting('seo_owner_name')) ?>">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Price Range</label>
+                <input class="form-control" type="text" name="seo_price_range" value="<?= esc(setting('seo_price_range')) ?>" placeholder="$$">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Operating Since</label>
+                <input class="form-control" type="text" name="seo_founding_year" value="<?= esc(setting('seo_founding_year')) ?>" placeholder="2015">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Payment Methods Accepted</label>
+                <input class="form-control" type="text" name="seo_payment_accepted" value="<?= esc(setting('seo_payment_accepted')) ?>">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Street Address <small class="text-muted fw-normal">(leave blank if you do not want it published)</small></label>
+                <input class="form-control" type="text" name="seo_street_address" value="<?= esc(setting('seo_street_address')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">City</label>
+                <input class="form-control" type="text" name="seo_locality" value="<?= esc(setting('seo_locality')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Province Code</label>
+                <input class="form-control" type="text" name="seo_region" value="<?= esc(setting('seo_region')) ?>" placeholder="ON">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Postal Code</label>
+                <input class="form-control" type="text" name="seo_postal_code" value="<?= esc(setting('seo_postal_code')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Country Code</label>
+                <input class="form-control" type="text" name="seo_country" value="<?= esc(setting('seo_country')) ?>" placeholder="CA">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Latitude</label>
+                <input class="form-control" type="text" name="seo_geo_lat" value="<?= esc(setting('seo_geo_lat')) ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Longitude</label>
+                <input class="form-control" type="text" name="seo_geo_lng" value="<?= esc(setting('seo_geo_lng')) ?>">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Service Radius (km)</label>
+                <input class="form-control" type="text" name="seo_geo_radius_km" value="<?= esc(setting('seo_geo_radius_km')) ?>">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Open Days <small class="text-muted fw-normal">(comma separated)</small></label>
+                <input class="form-control" type="text" name="seo_open_days" value="<?= esc(setting('seo_open_days')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Opens</label>
+                <input class="form-control" type="time" name="seo_open_time" value="<?= esc(setting('seo_open_time')) ?>">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Closes</label>
+                <input class="form-control" type="time" name="seo_close_time" value="<?= esc(setting('seo_close_time')) ?>">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Other Profiles <small class="text-muted fw-normal">(one URL per line — Google Business Profile, HomeStars, Yelp, LinkedIn…)</small></label>
+                <textarea class="form-control" name="seo_sameas" rows="3" placeholder="https://www.google.com/maps/place/..."><?= esc(setting('seo_sameas')) ?></textarea>
+                <div class="form-text">Facebook, Instagram and TikTok from the Contact tab are added automatically.</div>
+            </div>
+        </div>
+
+        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Review stars</h6>
+        <div class="alert alert-warning">
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" id="seo-agg" name="seo_aggregate_rating" value="1"<?= setting('seo_aggregate_rating') === '1' ? ' checked' : '' ?>>
+                <label class="form-check-label" for="seo-agg"><strong>Publish star ratings from the Testimonials table as structured data</strong></label>
+            </div>
+            <p class="mb-0 small">
+                Leave this OFF unless every testimonial is a real review from a real customer that you could
+                evidence if asked. Google issues manual penalties for review markup it considers fabricated, and
+                the seeded example testimonials would qualify. Collecting reviews on your Google Business Profile
+                is the safer and more effective route to stars in search results.
+            </p>
+        </div>
+
+        <button class="btn btn-gold" type="submit"><i class="fa-solid fa-floppy-disk me-2"></i>Save SEO Settings</button>
     </form>
 </div>
 

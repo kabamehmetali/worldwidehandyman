@@ -1,7 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/db.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/seo.php';
 
 $errors = [];
 $old = ['name' => '', 'email' => '', 'phone' => '', 'subject' => '', 'message' => ''];
@@ -45,8 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Contact';
-$metaDescription = 'Contact Worldwide Handyman — serving the Greater Toronto Area. Call, email or send a message.';
+$pageTitle       = 'Contact Your GTA Handyman';
+$metaDescription = 'Contact Worldwide Handyman — serving Toronto and the Greater Toronto Area. Call, text, email or send a message and get a free quote.';
+$canonicalPath   = 'contact';
+$ogImage         = 'assets/img/work-condo.jpg';
+$breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Contact']];
+$schemas         = [[
+    '@type'      => 'ContactPage',
+    '@id'        => canonical_url('contact') . '#contactpage',
+    'name'       => 'Contact Worldwide Handyman',
+    'mainEntity' => ['@id' => site_url() . '#business'],
+]];
 require __DIR__ . '/includes/header.php';
 
 $mapKey = setting('google_maps_api_key');
@@ -56,12 +63,7 @@ $mapQuery = setting('map_query', 'Toronto, ON, Canada');
 <section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-condo.jpg')) ?>');">
     <div class="container">
         <h1>Contact Me</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= esc(base_url()) ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Contact</li>
-            </ol>
-        </nav>
+        <?= breadcrumb_html($breadcrumbs) ?>
     </div>
 </section>
 

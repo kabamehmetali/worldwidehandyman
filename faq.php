@@ -1,22 +1,26 @@
 <?php
-$pageTitle = 'FAQ';
-$metaDescription = 'Frequently asked questions about Worldwide Handyman — service areas, quotes, pricing, working hours and more.';
-require __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/seo.php';
 
 $faqs = db()->query(
     'SELECT * FROM faqs WHERE is_active = 1 ORDER BY sort_order ASC, id ASC'
 )->fetchAll();
+
+$pageTitle       = 'Handyman FAQ — Quotes, Pricing, Areas';
+$metaDescription = 'Frequently asked questions about Worldwide Handyman — service areas, quotes, pricing, working hours and more.';
+$canonicalPath   = 'faq';
+$ogImage         = 'assets/img/work-install.jpg';
+$breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'FAQ']];
+$schemas         = [schema_faq(array_map(static fn ($f) => [
+    'q' => $f['question'], 'a' => $f['answer'],
+], $faqs), canonical_url($canonicalPath))];
+
+require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-install.jpg')) ?>');">
     <div class="container">
         <h1>Frequently Asked Questions</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= esc(base_url()) ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">FAQ</li>
-            </ol>
-        </nav>
+        <?= breadcrumb_html($breadcrumbs) ?>
     </div>
 </section>
 

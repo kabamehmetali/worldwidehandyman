@@ -1,7 +1,5 @@
 <?php
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/db.php';
-require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/seo.php';
 require_once __DIR__ . '/includes/twilio.php';
 
 $errors = [];
@@ -57,8 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$pageTitle = 'Get a Quote';
-$metaDescription = 'Request a free, no-obligation handyman quote for your home or business anywhere in the Greater Toronto Area.';
+$pageTitle       = 'Get a Free Handyman Quote';
+$metaDescription = 'Request a free, no-obligation handyman quote for your home or business anywhere in the Greater Toronto Area. Usually answered within one business day.';
+$canonicalPath   = 'quote';
+$ogImage         = 'assets/img/work-kitchen-2.jpg';
+$breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Get a Quote']];
 require __DIR__ . '/includes/header.php';
 
 $serviceOptions = db()->query(
@@ -69,12 +70,7 @@ $serviceOptions = db()->query(
 <section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-kitchen-2.jpg')) ?>');">
     <div class="container">
         <h1>Get a Free Quote</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= esc(base_url()) ?>">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Get a Quote</li>
-            </ol>
-        </nav>
+        <?= breadcrumb_html($breadcrumbs) ?>
     </div>
 </section>
 

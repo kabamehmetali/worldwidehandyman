@@ -1,5 +1,24 @@
 <?php
-$pageTitle = null; // header falls back to the tagline for the homepage
+require_once __DIR__ . '/includes/seo.php';
+
+/* The homepage carries the money keyword in its title tag; the hero keeps the
+   brand tagline as its H1 with the keyword line sitting above it. */
+$pageTitleFull   = setting('seo_home_title', 'Handyman in Toronto & the GTA') . ' | ' . setting('site_name');
+$metaDescription = setting('seo_home_description', setting('meta_description'));
+$canonicalPath   = '';
+$ogImage         = setting('hero_image');
+$breadcrumbs     = [];
+
+$canonicalHome = canonical_url('');
+$seoServices   = seo_service_pages();
+$majorCities   = seo_locations(1);
+$schemas       = [];
+if ($seoServices) {
+    $schemas[] = schema_item_list('Handyman services', array_map(static fn ($s) => [
+        'name' => $s['name'], 'url' => 'services/' . $s['slug'],
+    ], $seoServices), $canonicalHome);
+}
+
 require __DIR__ . '/includes/header.php';
 
 $services = db()->query(
@@ -17,6 +36,7 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
 <header class="hero" style="background-image: url('<?= esc(base_url(setting('hero_image'))) ?>');">
     <div class="container hero-inner">
         <div class="hero-content">
+            <span class="hero-eyebrow"><i class="fa-solid fa-location-dot"></i> <?= esc(setting('seo_home_title', 'Handyman in Toronto & the GTA')) ?></span>
             <h1 class="hero-title"><?= $heroTitle ?></h1>
             <p class="hero-sub"><?= esc(setting('hero_subtitle')) ?></p>
             <div class="d-flex flex-wrap gap-3">
@@ -213,6 +233,31 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
                     </div>
                 </div>
             <?php endforeach; ?>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<?php if ($majorCities): ?>
+<!-- Service areas -->
+<section class="section">
+    <div class="container">
+        <div class="text-center mb-5 reveal">
+            <span class="section-eyebrow"><i class="fa-solid fa-earth-americas"></i> Service Areas</span>
+            <h2 class="section-title">Serving the Greater Toronto Area</h2>
+            <p class="section-sub mx-auto">One trusted handyman across the GTA. Find your city below for the work I do there.</p>
+        </div>
+        <div class="row g-3">
+            <?php foreach ($majorCities as $city): ?>
+                <div class="col-6 col-md-4 col-lg-2 reveal">
+                    <a class="area-card d-block text-center" href="<?= esc(location_url($city['slug'])) ?>">
+                        <i class="fa-solid fa-location-dot"></i> <?= esc($city['name']) ?>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        </div>
+        <div class="text-center mt-4 reveal">
+            <a class="btn btn-outline-navy" href="<?= esc(base_url('service-areas')) ?>">All Service Areas <i class="fa-solid fa-arrow-right ms-1"></i></a>
         </div>
     </div>
 </section>
