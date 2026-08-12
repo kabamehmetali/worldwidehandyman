@@ -15,7 +15,7 @@ $totalAreas  = array_sum(array_map('count', $byRegion));
 $pageTitle       = setting('seo_areas_title', 'Handyman Service Areas Across the GTA');
 $metaDescription = setting('seo_areas_description');
 $canonicalPath   = 'service-areas';
-$ogImage         = 'assets/img/service-areas-hero-painting.png';
+$ogImage         = 'assets/img/services-hero-koltuk.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Service Areas']];
 
 $canonical = canonical_url($canonicalPath);
@@ -33,7 +33,7 @@ if ($totalAreas) {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait service-areas-banner" style="background-image: url('<?= esc(base_url('assets/img/service-areas-hero-painting.png')) ?>');">
+<section class="page-banner page-banner-portrait service-areas-banner" style="background-image: url('<?= esc(base_url('assets/img/services-hero-koltuk.png')) ?>');">
     <div class="container">
         <h1>Handyman Service Areas</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

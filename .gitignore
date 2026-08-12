@@ -2,12 +2,15 @@
 # Local DB credentials (copy includes/config.sample.php -> includes/config.php)
 includes/config.php
 
-# SQL dumps and seeds — schema.sql seeds live Twilio and Google Maps API keys
-# straight into the settings table, so nothing in sql/ is safe to publish.
-sql/
-*.sql
+# schema.sql seeds live Twilio and Google Maps API keys straight into the
+# settings table, so it must never be published. The SEO files next to it are
+# page content only — no credentials — and are tracked so that deployments can
+# import them (verified: no key patterns in either file).
+sql/schema.sql
+sql/*.dump
 *.sql.gz
-*.dump
+!sql/seo.sql
+!sql/seo-seed.sql
 
 # Anything else that carries credentials
 .env

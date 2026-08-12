@@ -17,7 +17,7 @@ $areas       = seo_locations(1);
 $pageTitle       = 'Handyman Services in Toronto & the GTA';
 $metaDescription = 'Every handyman service I offer across the GTA — repairs, TV mounting, furniture assembly, drywall, painting, plumbing fixtures, lighting, doors, flooring and more.';
 $canonicalPath   = 'services';
-$ogImage         = 'assets/img/work-bright-shop.jpg';
+$ogImage         = 'assets/img/service-areas-hero-painting.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Services']];
 
 $canonical = canonical_url($canonicalPath);
@@ -36,7 +36,7 @@ $legacyServices = $seoServices ? [] : db()->query(
 )->fetchAll();
 ?>
 
-<section class="page-banner page-banner-portrait services-banner" style="background-image: url('<?= esc(base_url('assets/img/services-hero-koltuk.png')) ?>');">
+<section class="page-banner page-banner-portrait services-banner" style="background-image: url('<?= esc(base_url('assets/img/service-areas-hero-painting.png')) ?>');">
     <div class="container">
         <h1>Our Services</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

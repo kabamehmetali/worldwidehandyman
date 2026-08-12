@@ -733,8 +733,7 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .page-banner .breadcrumb-item, .page-banner .breadcrumb-item a { color: rgba(255,255,255,.75); font-size: .9rem; }
 .page-banner .breadcrumb-item.active { color: var(--ww-gold-light); }
 .page-banner .breadcrumb-item a:hover { color: var(--ww-gold-light); }
-/* Services hero: the custom panoramic room scene fills the fixed banner while
-   keeping the furniture-moving action prominent on the right. */
+/* Services hero: the painting scene retains clear title space on the left. */
 .page-banner.services-banner {
     background-color: var(--ww-navy-dark);
     background-repeat: no-repeat;
@@ -742,20 +741,20 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 }
 .page-banner.services-banner::before {
     background: linear-gradient(90deg,
-        rgba(10, 20, 40, .84) 0%,
-        rgba(10, 20, 40, .72) 34%,
-        rgba(10, 20, 40, .30) 58%,
-        rgba(10, 20, 40, .08) 100%);
-}
-/* Service Areas hero: retain the full head on the right and keep the left
-   side dark enough for the title against the residential streetscape. */
-.page-banner.service-areas-banner { background-position: center top; }
-.page-banner.service-areas-banner::before {
-    background: linear-gradient(90deg,
         rgba(10, 20, 40, .86) 0%,
         rgba(10, 20, 40, .68) 40%,
-        rgba(10, 20, 40, .30) 65%,
+        rgba(10, 20, 40, .30) 58%,
         rgba(10, 20, 40, .16) 100%);
+}
+/* Service Areas hero: retain the full head on the right and keep the left
+   side dark enough for the title against the furniture-moving scene. */
+.page-banner.service-areas-banner { background-position: center 23%; }
+.page-banner.service-areas-banner::before {
+    background: linear-gradient(90deg,
+        rgba(10, 20, 40, .84) 0%,
+        rgba(10, 20, 40, .72) 34%,
+        rgba(10, 20, 40, .30) 65%,
+        rgba(10, 20, 40, .08) 100%);
 }
 /* About hero: preserve the owner portrait while the darker workshop side
    gives the heading a high-contrast, intentional home. */
@@ -809,10 +808,10 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     background-position: center top;
 }
 .page-banner.page-banner-portrait.services-banner {
-    background-position: center 23%;
+    background-position: center 10%;
 }
 .page-banner.page-banner-portrait.service-areas-banner {
-    background-position: center top;
+    background-position: center 23%;
 }
 .page-banner.page-banner-portrait.about-banner {
     background-position: center top;
@@ -827,8 +826,8 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     /* Narrow viewports scale the image by height instead, so the full frame is
        already visible — no extra height needed. */
     .page-banner.page-banner-portrait { min-height: 320px; }
-    .page-banner.page-banner-portrait.services-banner { background-position: 80% center; }
-    .page-banner.page-banner-portrait.service-areas-banner { background-position: 82% top; }
+    .page-banner.page-banner-portrait.services-banner { background-position: 82% top; }
+    .page-banner.page-banner-portrait.service-areas-banner { background-position: 80% center; }
     .page-banner.page-banner-portrait.about-banner { background-position: 82% top; }
     .page-banner.page-banner-portrait.contact-banner { background-position: 80% top; }
     .page-banner.page-banner-portrait.quote-banner { background-position: 80% top; }
