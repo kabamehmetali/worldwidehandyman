@@ -19,19 +19,42 @@ function base_url(string $path = ''): string
 }
 
 /**
- * Public base path.
+ * Public base path — the URL prefix this site is served under.
  *
- * BASE_URL is now derived in config.php by comparing SCRIPT_NAME with
- * SCRIPT_FILENAME, which is accurate on every host and SAPI, so there is
- * nothing left to correct here.
+ * Worked out by comparing the running script's URL path (SCRIPT_NAME) with its
+ * filesystem path (SCRIPT_FILENAME). Both describe the same file, so once the
+ * in-app part is removed what is left is exactly the prefix. Correct at a
+ * domain root, in a subdirectory, on an addon domain, behind a symlinked or
+ * aliased document root, and under every SAPI.
  *
- * (An earlier fallback took dirname(SCRIPT_NAME) whenever BASE_URL was '/'.
- * That is wrong for any script not sitting in the site root — inside /admin
- * it returned '/admin/', so every admin link came out as /admin/admin/…)
+ * This deliberately does NOT depend on config.php, because config.php holds
+ * database credentials and is therefore untracked — a deployment would never
+ * pick up a fix that lived there. BASE_URL is only a last resort.
+ *
+ * (An earlier version took dirname(SCRIPT_NAME) whenever BASE_URL was '/'.
+ * That is wrong for any script outside the site root: inside /admin it
+ * returned '/admin/', so every admin link came out as /admin/admin/…)
  */
 function app_base_url(): string
 {
-    return BASE_URL;
+    static $base = null;
+    if ($base !== null) {
+        return $base;
+    }
+
+    $appRoot    = str_replace('\\', '/', realpath(APP_ROOT) ?: APP_ROOT);
+    $scriptName = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+    $scriptFile = str_replace('\\', '/', realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) ?: '');
+
+    if ($scriptName !== '' && $scriptFile !== '' && strpos($scriptFile, $appRoot) === 0) {
+        // The part of the script path inside the app, e.g. "admin/dashboard.php"
+        $relative = ltrim(substr($scriptFile, strlen($appRoot)), '/');
+        if ($relative !== '' && substr($scriptName, -strlen($relative)) === $relative) {
+            return $base = rtrim(substr($scriptName, 0, -strlen($relative)), '/') . '/';
+        }
+    }
+
+    return $base = (defined('BASE_URL') ? BASE_URL : '/');
 }
 
 /**
