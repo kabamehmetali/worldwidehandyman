@@ -1,0 +1,39 @@
+# ---------------------------------------------------------------- secrets
+# Local DB credentials (copy includes/config.sample.php -> includes/config.php)
+includes/config.php
+
+# SQL dumps and seeds — schema.sql seeds live Twilio and Google Maps API keys
+# straight into the settings table, so nothing in sql/ is safe to publish.
+sql/
+*.sql
+*.sql.gz
+*.dump
+
+# Anything else that carries credentials
+.env
+.env.*
+*.pem
+*.key
+credentials*.json
+
+# ------------------------------------------------------- generated content
+# Admin uploads (recreated at runtime; assets/img/ IS tracked)
+assets/uploads/
+
+# ---------------------------------------------------------- staging assets
+# 34 MB of original logo drafts / RTF copy — not code, not served.
+# Delete this line if you want the source artwork version-controlled.
+HelpingFiles/
+
+# ------------------------------------------------------------ logs & junk
+*.log
+error_log
+php_errors.log
+.DS_Store
+._*
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+.cache/

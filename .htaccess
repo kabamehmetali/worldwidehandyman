@@ -1,0 +1,30 @@
+# Worldwide Handyman — clean URLs (no .php extension)
+#
+# Works unchanged at a domain root or in a subfolder: the canonical redirects
+# read the original request line (THE_REQUEST), which always carries the full
+# path, so the folder name is preserved automatically. THE_REQUEST also never
+# changes during an internal rewrite, which is what keeps rules 1 and 2 from
+# looping against rule 3.
+#
+# The admin panel keeps its .php URLs — it is private, so there is nothing to
+# gain from rewriting it, and leaving it alone keeps its links working as-is.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # /index.php -> /            (canonical, 301)
+    RewriteCond %{REQUEST_URI} !/admin/
+    RewriteCond %{THE_REQUEST} \s/+(.*?)index\.php[\s?] [NC]
+    RewriteRule ^ /%1 [R=301,L,NE]
+
+    # /about.php -> /about       (canonical, 301)
+    RewriteCond %{REQUEST_URI} !/admin/
+    RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+    RewriteRule ^ /%1 [R=301,L,NE]
+
+    # /about -> about.php        (internal rewrite, URL stays clean)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.php -f
+    RewriteRule ^(.+?)/?$ $1.php [L]
+</IfModule>

@@ -1,0 +1,258 @@
+/* Worldwide Handyman — admin panel styles */
+
+:root {
+    --ww-navy: #10203F;
+    --ww-navy-dark: #0A1428;
+    --ww-gold: #F5A800;
+    --ww-gold-light: #FFC933;
+    --ww-red: #D2382C;
+    --ww-bg: #F2F4FA;
+    --ww-gold-gradient: linear-gradient(135deg, #FFC933 0%, #F5A800 55%, #E88A00 100%);
+}
+
+body.admin-body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--ww-bg);
+    color: #37415C;
+}
+h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; color: var(--ww-navy); }
+
+.admin-wrap { display: flex; min-height: 100vh; }
+
+/* Sidebar ---------------------------------------------------------------- */
+.admin-sidebar {
+    width: 264px;
+    flex: 0 0 264px;
+    background: linear-gradient(180deg, var(--ww-navy) 0%, var(--ww-navy-dark) 100%);
+    color: rgba(255,255,255,.8);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1040;
+}
+.admin-brand {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: 1.2rem 1.3rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.admin-brand img { height: 46px; }
+.admin-brand strong { color: #fff; display: block; font-family: 'Poppins', sans-serif; font-size: .95rem; line-height: 1.2; }
+.admin-brand small { color: var(--ww-gold-light); font-size: .74rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+
+.admin-nav { flex: 1; padding: 1rem 0; }
+.admin-nav-section {
+    display: block;
+    padding: 1rem 1.4rem .45rem;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.35);
+}
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .65rem 1.4rem;
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-size: .92rem;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all .2s ease;
+}
+.admin-nav-link i { width: 20px; text-align: center; font-size: .95rem; }
+.admin-nav-link:hover { color: #fff; background: rgba(255,255,255,.05); }
+.admin-nav-link.active {
+    color: #fff;
+    background: rgba(245,168,0,.12);
+    border-left-color: var(--ww-gold);
+}
+.admin-nav-link.active i { color: var(--ww-gold-light); }
+.nav-badge {
+    margin-left: auto;
+    background: var(--ww-red);
+    color: #fff;
+    font-size: .7rem;
+    font-weight: 700;
+    border-radius: 50rem;
+    padding: .15rem .55rem;
+}
+.admin-sidebar-foot {
+    padding: 1rem 1.4rem 1.4rem;
+    border-top: 1px solid rgba(255,255,255,.08);
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+.admin-sidebar-foot a { color: rgba(255,255,255,.7); text-decoration: none; font-size: .88rem; }
+.admin-sidebar-foot a:hover { color: var(--ww-gold-light); }
+.admin-sidebar-foot i { width: 18px; margin-right: .4rem; }
+
+/* Main ------------------------------------------------------------------- */
+.admin-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.admin-topbar {
+    background: #fff;
+    box-shadow: 0 2px 10px rgba(16,32,63,.06);
+    padding: .9rem 1.6rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+.admin-topbar h1 { font-size: 1.15rem; font-weight: 700; margin: 0; flex: 1; }
+.sidebar-toggle {
+    display: none;
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    color: var(--ww-navy);
+}
+.admin-user { display: flex; align-items: center; gap: .6rem; font-weight: 600; font-size: .9rem; }
+.admin-avatar {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: var(--ww-gold-gradient);
+    color: var(--ww-navy-dark);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+}
+.admin-content { padding: 1.8rem 1.6rem 3rem; max-width: 1280px; width: 100%; }
+
+/* Cards & tables --------------------------------------------------------- */
+.admin-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(16,32,63,.07);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.admin-card .card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.1rem;
+    flex-wrap: wrap;
+}
+.admin-card .card-heading h5 { margin: 0; font-size: 1.02rem; }
+
+.stat-tile {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 16px rgba(16,32,63,.07);
+    padding: 1.3rem 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+}
+.stat-tile .st-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem;
+    background: rgba(245,168,0,.14);
+    color: var(--ww-gold);
+    flex: 0 0 auto;
+}
+.stat-tile.tile-red .st-icon { background: rgba(210,56,44,.12); color: var(--ww-red); }
+.stat-tile.tile-navy .st-icon { background: rgba(16,32,63,.1); color: var(--ww-navy); }
+.stat-tile .st-num { font-family: 'Poppins', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--ww-navy); line-height: 1.1; }
+.stat-tile .st-label { font-size: .82rem; color: #7c86a2; }
+
+.table { --bs-table-hover-bg: rgba(245,168,0,.05); }
+.table thead th {
+    font-size: .74rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: #7c86a2;
+    border-bottom-width: 1px;
+    white-space: nowrap;
+}
+.table td { vertical-align: middle; font-size: .92rem; }
+.thumb-sm { width: 56px; height: 42px; object-fit: cover; border-radius: .5rem; }
+.thumb-lg { width: 100%; height: 150px; object-fit: cover; border-radius: .8rem; }
+
+/* Buttons / forms --------------------------------------------------------- */
+.btn { font-weight: 600; border-radius: .65rem; }
+.btn-gold { background: var(--ww-gold-gradient); border: none; color: var(--ww-navy-dark); }
+.btn-gold:hover { color: var(--ww-navy-dark); filter: brightness(1.05); }
+.btn-navy { background: var(--ww-navy); border-color: var(--ww-navy); color: #fff; }
+.btn-navy:hover { background: var(--ww-navy-dark); color: #fff; }
+.form-label { font-weight: 600; font-size: .88rem; color: var(--ww-navy); }
+.form-control, .form-select { border-radius: .6rem; border-color: #dfe4ef; }
+.form-control:focus, .form-select:focus {
+    border-color: var(--ww-gold);
+    box-shadow: 0 0 0 .18rem rgba(245,168,0,.18);
+}
+.form-text { font-size: .8rem; }
+.icon-preview {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: rgba(245,168,0,.14);
+    color: var(--ww-gold);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+}
+.badge-status { font-size: .74rem; font-weight: 700; padding: .4em .7em; border-radius: 50rem; }
+.badge-new { background: rgba(210,56,44,.12); color: var(--ww-red); }
+.badge-contacted { background: rgba(245,168,0,.15); color: #B07800; }
+.badge-closed { background: rgba(16,32,63,.1); color: var(--ww-navy); }
+.color-swatch-input { width: 56px; height: 40px; padding: .2rem; }
+
+/* Login ------------------------------------------------------------------ */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(245,168,0,.14), transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(210,56,44,.12), transparent 45%),
+        var(--ww-navy-dark);
+    padding: 1.5rem;
+}
+.login-card {
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 24px 70px rgba(0,0,0,.4);
+    max-width: 420px;
+    width: 100%;
+    padding: 2.5rem 2.3rem;
+    text-align: center;
+}
+.login-card img.logo { height: 100px; margin-bottom: 1rem; }
+.login-card h1 { font-size: 1.3rem; font-weight: 800; }
+.login-card p.sub { color: #7c86a2; font-size: .9rem; margin-bottom: 1.6rem; }
+.login-card .form-control { padding: .75rem 1rem; }
+.login-tagline {
+    margin-top: 1.4rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: .85rem;
+    background: var(--ww-gold-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Responsive ------------------------------------------------------------- */
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        position: fixed;
+        left: -280px;
+        transition: left .28s ease;
+        box-shadow: 8px 0 30px rgba(0,0,0,.25);
+    }
+    .admin-sidebar.open { left: 0; }
+    .sidebar-toggle { display: block; }
+}
