@@ -12,6 +12,24 @@ define('DB_NAME', 'worldwidehandyman_db');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
+/**
+ * Clean URLs.
+ *
+ *   true  — links are /about, /handyman/toronto, /services/tv-mounting/toronto
+ *           Requires mod_rewrite AND AllowOverride to be enabled for this
+ *           directory, so .htaccess can map those URLs to the PHP files.
+ *           This is what the SEO setup is built around: keyword-rich URLs,
+ *           and canonical tags + sitemap.xml that match them.
+ *
+ *   false — links fall back to real PHP endpoints (/about.php,
+ *           /location.php?slug=toronto). Every page still works on hosting
+ *           without rewrite support, but the URLs lose their keywords and
+ *           the sitemap/canonicals follow them down.
+ *
+ * Confirm with _wwh-diag.php before switching this on in production.
+ */
+define('USE_CLEAN_URLS', false);
+
 // Absolute filesystem path to the site root (this file lives in /includes)
 define('APP_ROOT', dirname(__DIR__));
 
