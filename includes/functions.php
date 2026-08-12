@@ -14,7 +14,104 @@ function base_url(string $path = ''): string
     if (preg_match('~^(?:https?:)?//|^(?:mailto:|tel:|#)~i', $path)) {
         return $path;
     }
-    return BASE_URL . ltrim($path, '/');
+
+    return app_base_url() . public_route_path($path);
+}
+
+/**
+ * Public base path, with a SCRIPT_NAME fallback for hosts that serve a
+ * symlinked app from a subdirectory outside of their document root.
+ */
+function app_base_url(): string
+{
+    $base = BASE_URL;
+    if ($base !== '/') {
+        return $base;
+    }
+
+    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
+    if (!str_starts_with($scriptName, '/')) {
+        return $base;
+    }
+
+    $scriptDir = rtrim(dirname($scriptName), '/');
+    return $scriptDir === '' || $scriptDir === '.' ? '/' : $scriptDir . '/';
+}
+
+/**
+ * Resolve public routes to real PHP endpoints.
+ *
+ * The site supports clean URLs through .htaccess, but some production hosts
+ * do not enable per-directory rewrite rules. Sending links to their real PHP
+ * files keeps every page reachable in that environment instead of falling
+ * through to the host's homepage route.
+ */
+function public_route_path(string $path): string
+{
+    $path = ltrim($path, '/');
+
+    // Keep assets, admin URLs, explicit PHP files, and optional fragments or
+    // query-only links exactly as supplied.
+    if ($path === '' || $path[0] === '?' || $path[0] === '#') {
+        return $path;
+    }
+
+    $suffixAt = strcspn($path, '?#');
+    $route    = substr($path, 0, $suffixAt);
+    $suffix   = substr($path, $suffixAt);
+
+    if (preg_match('~\.(?:php|html?|css|js|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|map|txt|xml|pdf|mp4|webm)$~i', $route)
+        || str_starts_with($route, 'assets/')
+        || str_starts_with($route, 'admin/')) {
+        return $path;
+    }
+
+    // Clean URLs can still be opted into on a server where Apache rewrite
+    // support is known to be enabled.
+    if (defined('USE_CLEAN_URLS') && USE_CLEAN_URLS) {
+        return $path;
+    }
+
+    if ($route === 'index') {
+        return $suffix;
+    }
+
+    $pages = [
+        'about', 'contact', 'faq', 'gallery', 'page', 'quote', 'service-areas', 'services',
+    ];
+    if (in_array($route, $pages, true)) {
+        return $route . '.php' . $suffix;
+    }
+
+    if (preg_match('~^handyman/([a-z0-9-]+)$~i', $route, $matches)) {
+        return 'location.php?slug=' . rawurlencode($matches[1]) . public_route_suffix($suffix);
+    }
+
+    if (preg_match('~^services/([a-z0-9-]+)/([a-z0-9-]+)$~i', $route, $matches)) {
+        return 'service-location.php?service=' . rawurlencode($matches[1])
+            . '&location=' . rawurlencode($matches[2])
+            . public_route_suffix($suffix);
+    }
+
+    if (preg_match('~^services/([a-z0-9-]+)$~i', $route, $matches)) {
+        return 'service.php?slug=' . rawurlencode($matches[1]) . public_route_suffix($suffix);
+    }
+
+    return $path;
+}
+
+/** Append a source route's query string to a mapped PHP query string. */
+function public_route_suffix(string $suffix): string
+{
+    if ($suffix === '' || $suffix[0] === '#') {
+        return $suffix;
+    }
+
+    $hashAt = strpos($suffix, '#');
+    $query  = $hashAt === false ? $suffix : substr($suffix, 0, $hashAt);
+    $hash   = $hashAt === false ? '' : substr($suffix, $hashAt);
+
+    return '&' . ltrim($query, '?') . $hash;
 }
 
 /** All settings as [key => value], loaded once per request. */
