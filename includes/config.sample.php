@@ -6,53 +6,68 @@
  * config.php is git-ignored because it holds database credentials.
  */
 
-define('DB_HOST', '127.0.0.1');
+define('DB_HOST', 'localhost');
 define('DB_PORT', '3306');
 define('DB_NAME', 'worldwidehandyman_db');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
 /**
- * Clean URLs.
+ * Clean URLs — normally leave this alone.
  *
- *   true  — links are /about, /handyman/toronto, /services/tv-mounting/toronto
- *           Requires mod_rewrite AND AllowOverride to be enabled for this
- *           directory, so .htaccess can map those URLs to the PHP files.
- *           This is what the SEO setup is built around: keyword-rich URLs,
- *           and canonical tags + sitemap.xml that match them.
+ * By default the site detects whether Apache rewrite rules are running (the
+ * .htaccess sets an environment variable that clean_urls_enabled() reads) and
+ * picks the right style automatically:
  *
- *   false — links fall back to real PHP endpoints (/about.php,
- *           /location.php?slug=toronto). Every page still works on hosting
- *           without rewrite support, but the URLs lose their keywords and
- *           the sitemap/canonicals follow them down.
+ *   rewrite works    -> /about, /handyman/toronto, /services/tv-mounting/toronto
+ *   rewrite missing  -> /about.php, /location.php?slug=toronto
  *
- * Confirm with _wwh-diag.php before switching this on in production.
+ * Either way every page is reachable and canonical tags, the sitemap and all
+ * internal links stay consistent with each other.
+ *
+ * Uncomment to force one style, e.g. if a host runs rewrite rules from the
+ * main server config rather than .htaccess and the probe never fires:
  */
-define('USE_CLEAN_URLS', false);
+// define('USE_CLEAN_URLS', true);
 
 // Absolute filesystem path to the site root (this file lives in /includes)
 define('APP_ROOT', dirname(__DIR__));
 
-// URL base path of the site, works at domain root, in a subdirectory, and
-// when production hosting maps the site through a symlink or alias.
-$docRoot = rtrim(str_replace('\\', '/', realpath($_SERVER['DOCUMENT_ROOT'] ?? APP_ROOT) ?: ''), '/');
-$appRoot = str_replace('\\', '/', APP_ROOT);
-$basePath = ($docRoot !== '' && strpos($appRoot, $docRoot) === 0)
-    ? substr($appRoot, strlen($docRoot))
-    : '';
+/**
+ * Public base path of the site.
+ *
+ * Derived by comparing the running script's URL path (SCRIPT_NAME) with its
+ * filesystem path (SCRIPT_FILENAME). Both describe the same file, so whatever
+ * is left over once the in-app part is removed is exactly the URL prefix the
+ * site is served under.
+ *
+ * This is what makes the site portable: it is correct at a domain root, in a
+ * subdirectory, on an addon domain, and behind a symlinked or aliased document
+ * root — including cPanel, where DOCUMENT_ROOT frequently does not match the
+ * real path (/home vs /home2 symlinks) and so cannot be trusted on its own.
+ */
+$appRootReal = str_replace('\\', '/', realpath(APP_ROOT) ?: APP_ROOT);
+$scriptName  = str_replace('\\', '/', (string) ($_SERVER['SCRIPT_NAME'] ?? ''));
+$scriptFile  = str_replace('\\', '/', realpath((string) ($_SERVER['SCRIPT_FILENAME'] ?? '')) ?: '');
 
-// A symlinked production app may sit outside DOCUMENT_ROOT even though it is
-// served below a subdirectory. SCRIPT_NAME retains that public subdirectory.
-if ($basePath === '') {
-    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-    if (str_starts_with($scriptName, '/')) {
-        $scriptDir = rtrim(dirname($scriptName), '/');
-        if ($scriptDir !== '' && $scriptDir !== '.') {
-            $basePath = $scriptDir;
-        }
+$basePath = null;
+if ($scriptName !== '' && $scriptFile !== '' && strpos($scriptFile, $appRootReal) === 0) {
+    // The part of the script path that sits inside the app, e.g. "admin/dashboard.php"
+    $relative = ltrim(substr($scriptFile, strlen($appRootReal)), '/');
+    if ($relative !== '' && substr($scriptName, -strlen($relative)) === $relative) {
+        $basePath = rtrim(substr($scriptName, 0, -strlen($relative)), '/');
     }
 }
-define('BASE_URL', rtrim($basePath, '/') . '/');
+
+if ($basePath === null) {
+    // Fallback: locate the app directory underneath the document root
+    $docRoot = rtrim(str_replace('\\', '/', realpath((string) ($_SERVER['DOCUMENT_ROOT'] ?? '')) ?: ''), '/');
+    $basePath = ($docRoot !== '' && strpos($appRootReal, $docRoot) === 0)
+        ? rtrim(substr($appRootReal, strlen($docRoot)), '/')
+        : '';
+}
+
+define('BASE_URL', $basePath . '/');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

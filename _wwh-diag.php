@@ -21,8 +21,19 @@ $appRoot = str_replace('\\', '/', __DIR__);
 /* ------------------------------------------------ is .htaccess being read? */
 // The .htaccess sets WWH_HTACCESS=1 via mod_env. If it is missing, either
 // .htaccess is ignored (AllowOverride None) or mod_env is unavailable.
-$htaccessEnv = $_SERVER['WWH_HTACCESS'] ?? getenv('WWH_HTACCESS') ?: '';
-$rewriteEnv  = $_SERVER['WWH_REWRITE'] ?? getenv('WWH_REWRITE') ?: '';
+$htaccessEnv = '';
+$rewriteEnv  = '';
+foreach ($_SERVER as $k => $v) {
+    // Apache re-exposes these prefixed with REDIRECT_ after an internal rewrite
+    if ($v === '1' && substr($k, -13) === 'WWH_HTACCESS') {
+        $htaccessEnv = '1';
+    }
+    if ($v === '1' && substr($k, -15) === 'WWH_CLEAN_URLS') {
+        $rewriteEnv = '1';
+    }
+}
+$htaccessEnv = $htaccessEnv ?: (getenv('WWH_HTACCESS') === '1' ? '1' : '');
+$rewriteEnv  = $rewriteEnv ?: (getenv('WWH_CLEAN_URLS') === '1' ? '1' : '');
 
 /* ------------------------------------------------------ apache modules */
 $modules = function_exists('apache_get_modules') ? apache_get_modules() : null;
@@ -65,6 +76,10 @@ try {
     require_once __DIR__ . '/includes/functions.php';
     $baseUrlConst = BASE_URL;
     $appBaseUrl   = function_exists('app_base_url') ? app_base_url() : '(function missing)';
+    $cleanUrls    = function_exists('clean_urls_enabled')
+        ? (clean_urls_enabled() ? 'ON  — emitting /handyman/toronto style URLs'
+                                : 'OFF — falling back to /location.php?slug=toronto style URLs')
+        : '(function missing — old code still deployed?)';
     foreach (['', 'about', 'services', 'service-areas', 'faq', 'contact', 'quote',
               'handyman/toronto', 'services/tv-mounting', 'services/tv-mounting/toronto',
               'page?slug=example'] as $route) {
@@ -145,8 +160,9 @@ row('Doc root is a prefix?', (isset($_SERVER['DOCUMENT_ROOT'])
 if ($loadError !== '') {
     row('Load error', $loadError, 'includes/config.php or functions.php failed');
 } else {
-    row('BASE_URL constant', $baseUrlConst);
+    row('BASE_URL constant', $baseUrlConst, 'must equal the URL prefix the site is served under');
     row('app_base_url()', $appBaseUrl);
+    row('clean_urls_enabled()', $cleanUrls ?? null, 'auto-detected from the .htaccess probe');
     foreach ($sampleLinks as $route => $built) {
         row("base_url('" . $route . "')", $built);
     }

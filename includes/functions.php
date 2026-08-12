@@ -19,23 +19,50 @@ function base_url(string $path = ''): string
 }
 
 /**
- * Public base path, with a SCRIPT_NAME fallback for hosts that serve a
- * symlinked app from a subdirectory outside of their document root.
+ * Public base path.
+ *
+ * BASE_URL is now derived in config.php by comparing SCRIPT_NAME with
+ * SCRIPT_FILENAME, which is accurate on every host and SAPI, so there is
+ * nothing left to correct here.
+ *
+ * (An earlier fallback took dirname(SCRIPT_NAME) whenever BASE_URL was '/'.
+ * That is wrong for any script not sitting in the site root — inside /admin
+ * it returned '/admin/', so every admin link came out as /admin/admin/…)
  */
 function app_base_url(): string
 {
-    $base = BASE_URL;
-    if ($base !== '/') {
-        return $base;
+    return BASE_URL;
+}
+
+/**
+ * Are Apache rewrite rules actually running?
+ *
+ * The .htaccess sets WWH_CLEAN_URLS=1 on every request it handles. If that
+ * variable arrives, clean URLs are safe to emit; if it does not — because
+ * .htaccess is ignored, mod_rewrite is missing, or the file was never
+ * uploaded — links fall back to real PHP endpoints so the site still works.
+ *
+ * After an internal rewrite Apache re-exposes the variable prefixed with
+ * REDIRECT_ (sometimes more than once), so any matching key counts.
+ */
+function clean_urls_enabled(): bool
+{
+    static $enabled = null;
+    if ($enabled !== null) {
+        return $enabled;
     }
 
-    $scriptName = str_replace('\\', '/', $_SERVER['SCRIPT_NAME'] ?? '');
-    if (!str_starts_with($scriptName, '/')) {
-        return $base;
+    // An explicit constant in config.php always wins
+    if (defined('USE_CLEAN_URLS')) {
+        return $enabled = (bool) USE_CLEAN_URLS;
     }
 
-    $scriptDir = rtrim(dirname($scriptName), '/');
-    return $scriptDir === '' || $scriptDir === '.' ? '/' : $scriptDir . '/';
+    foreach ($_SERVER as $key => $value) {
+        if ($value === '1' && substr($key, -15) === 'WWH_CLEAN_URLS') {
+            return $enabled = true;
+        }
+    }
+    return $enabled = (getenv('WWH_CLEAN_URLS') === '1');
 }
 
 /**
@@ -66,9 +93,8 @@ function public_route_path(string $path): string
         return $path;
     }
 
-    // Clean URLs can still be opted into on a server where Apache rewrite
-    // support is known to be enabled.
-    if (defined('USE_CLEAN_URLS') && USE_CLEAN_URLS) {
+    // Where rewrite rules are running, emit the clean keyword URL as-is.
+    if (clean_urls_enabled()) {
         return $path;
     }
 
