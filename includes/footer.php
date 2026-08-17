@@ -62,6 +62,14 @@ $footerAreas = seo_locations();
                     <li><i class="fa-solid fa-location-dot"></i><span><?= esc(setting('address')) ?></span></li>
                     <li><i class="fa-solid fa-clock"></i><span><?= esc(setting('hours_weekday')) ?><br><?= esc(setting('hours_weekend')) ?></span></li>
                 </ul>
+                <div class="footer-contact-actions">
+                    <a class="footer-contact-btn footer-contact-btn-call" href="<?= esc(phone_link_href()) ?>">
+                        <i class="fa-solid fa-phone"></i> Call or Text
+                    </a>
+                    <a class="footer-contact-btn footer-contact-btn-email" href="mailto:<?= esc(setting('email')) ?>">
+                        <i class="fa-solid fa-envelope"></i> Send an Email
+                    </a>
+                </div>
             </div>
         </div>
     </div>

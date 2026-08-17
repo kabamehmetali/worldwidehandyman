@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageTitle       = 'Get a Free Handyman Quote';
 $metaDescription = 'Request a free, no-obligation handyman quote for your home or business anywhere in the Greater Toronto Area. Usually answered within one business day.';
 $canonicalPath   = 'quote';
-$ogImage         = 'assets/img/quote-hero.png';
+$ogImage         = 'assets/img/quote-hero-v2.png';
 $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'Get a Quote']];
 require __DIR__ . '/includes/header.php';
 
@@ -67,7 +67,7 @@ $serviceOptions = db()->query(
 )->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
-<section class="page-banner page-banner-portrait quote-banner" style="background-image: url('<?= esc(base_url('assets/img/quote-hero.png')) ?>');">
+<section class="page-banner page-banner-portrait quote-banner" style="background-image: url('<?= esc(base_url('assets/img/quote-hero-v2.png')) ?>');">
     <div class="container">
         <h1>Get a Free Quote</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

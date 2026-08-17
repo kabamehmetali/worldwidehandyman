@@ -1103,6 +1103,35 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .footer-contact i { color: var(--ww-gold); margin-top: .25rem; }
 .footer-contact a { color: rgba(255,255,255,.72); }
 .footer-contact a:hover { color: var(--ww-gold-light); }
+.footer-contact-actions {
+    display: grid;
+    gap: .65rem;
+    margin-top: 1.1rem;
+}
+.footer-contact-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .55rem;
+    min-height: 42px;
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: .7rem;
+    color: #fff;
+    font-size: .86rem;
+    font-weight: 700;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+.footer-contact-btn i { margin: 0; color: inherit; }
+.footer-contact-btn:hover { color: var(--ww-navy-dark); transform: translateY(-2px); }
+.footer-contact-btn-call {
+    border-color: transparent;
+    background: var(--ww-gold-gradient);
+    color: var(--ww-navy-dark);
+}
+.footer-contact-btn-email:hover {
+    background: rgba(255,255,255,.92);
+    border-color: rgba(255,255,255,.92);
+}
 .footer-social { display: flex; gap: .6rem; margin-top: 1.2rem; }
 .footer-social a {
     width: 40px; height: 40px;

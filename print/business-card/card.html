@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<title>Worldwide Handyman — Business Card</title>
+<style>
+/* ==========================================================================
+   Worldwide Handyman — business card
+   Trim 3.5 x 2 in  |  Bleed 0.125 in all round  |  Safe margin 0.125 in
+   Master file. `build.py` derives the print + proof + artifact versions.
+   Body class: preview (screen) | print (page per side) | guides (show marks)
+   ========================================================================== */
+
+:root{
+  --navy:        #10203F;
+  --navy-deep:   #0A1428;
+  --navy-lift:   #16294D;
+  --gold:        #F5A800;
+  --gold-light:  #FFC933;
+  --paper:       #FFFFFF;
+  --paper-tint:  #F5F7FB;
+
+  --bleed: 0.125in;
+  --trim-w: 3.5in;
+  --trim-h: 2in;
+  --page-w: 3.75in;  /* trim + bleed */
+  --page-h: 2.25in;
+  --safe:  0.125in;  /* inside trim */
+}
+
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+
+html{ -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+body{
+  font-family: "Avenir Next", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-feature-settings: "kern" 1, "liga" 1;
+  -webkit-font-smoothing: antialiased;
+  background: #6E7A8C;
+}
+
+/* ---------- the card shell ------------------------------------------------ */
+
+.card{
+  position: relative;
+  width: var(--page-w);
+  height: var(--page-h);
+  overflow: hidden;
+  background: var(--paper);
+}
+
+/* everything inside is positioned against the TRIM box, not the bleed box,
+   so the bleed is genuinely just spill-over on every edge */
+.trim{
+  position: absolute;
+  left: var(--bleed); top: var(--bleed);
+  width: var(--trim-w); height: var(--trim-h);
+}
+
+/* full-bleed layers reach past the trim on all sides */
+.spill{ position:absolute; inset: calc(var(--bleed) * -1); }
+
+/* ==========================================================================
+   FRONT
+   ========================================================================== */
+
+.card--front{ background: var(--navy); }
+
+.fx{ position:absolute; inset:0; pointer-events:none; }
+
+.fx--base{
+  background:
+    linear-gradient(158deg, var(--navy-lift) 0%, var(--navy) 46%, var(--navy-deep) 100%);
+}
+/* warm light behind the character, as if he's lit from the badge */
+.fx--glow{
+  background:
+    radial-gradient(ellipse 52% 82% at 21% 46%, rgba(245,168,0,.20), rgba(245,168,0,0) 68%),
+    radial-gradient(ellipse 70% 60% at 78% 18%, rgba(120,170,255,.10), rgba(120,170,255,0) 70%);
+}
+/* faint diagonal tooling texture */
+.fx--grain{
+  background: repeating-linear-gradient(
+    128deg,
+    rgba(255,255,255,.032) 0 0.006in,
+    rgba(255,255,255,0)    0.006in 0.052in);
+}
+
+.front__stage{
+  position: absolute;
+  left: var(--safe); right: var(--safe);
+  top: 0; bottom: 0.32in;              /* clears the gold bar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.16in;
+}
+
+.badge{
+  height: 1.22in;
+  width: auto;
+  flex: none;
+  filter: drop-shadow(0 0.022in 0.05in rgba(0,0,0,.45));
+}
+
+.lockup{ display:flex; flex-direction:column; align-items:flex-start; padding-top: .02in; }
+
+.wordmark{
+  width: 1.92in;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0.012in 0.03in rgba(0,0,0,.35));
+}
+
+.tagline{
+  display: flex;
+  align-items: center;
+  gap: 0.07in;
+  margin-top: 0.075in;
+  padding-left: 0.035in;
+}
+.tagline__rule{
+  width: 0.20in; height: 0.014in;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  flex: none;
+  border-radius: 0.007in;
+}
+.tagline__text{
+  font-family: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 7.6pt;
+  letter-spacing: 0.155em;
+  color: var(--gold-light);
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* --- gold contact bar, full bleed on left / right / bottom --------------- */
+.goldbar{
+  position: absolute;
+  left: calc(var(--bleed) * -1);
+  right: calc(var(--bleed) * -1);
+  bottom: calc(var(--bleed) * -1);
+  height: calc(0.30in + var(--bleed));
+  padding: 0 calc(var(--safe) + var(--bleed)) var(--bleed);
+  background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 62%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: inset 0 0.012in 0 rgba(255,255,255,.45);
+}
+.goldbar__phone{
+  display: flex; align-items: center; gap: 0.055in;
+  font-family: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 10.2pt;
+  letter-spacing: 0.018em;
+  color: var(--navy);
+}
+.goldbar__phone svg{ width: 0.105in; height: 0.105in; fill: var(--navy); flex:none; }
+.goldbar__web{
+  font-family: "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 7.4pt;
+  letter-spacing: 0.055em;
+  color: #24344F;
+}
+
+/* ==========================================================================
+   BACK
+   ========================================================================== */
+
+.card--back{ background: var(--paper); }
+
+.back__head{
+  position: absolute;
+  left: calc(var(--bleed) * -1);
+  right: calc(var(--bleed) * -1);
+  top: calc(var(--bleed) * -1);
+  height: calc(0.50in + var(--bleed));
+  padding: var(--bleed) calc(var(--safe) + var(--bleed)) 0;
+  background: linear-gradient(150deg, var(--navy-lift) 0%, var(--navy) 55%, var(--navy-deep) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.back__head::after{        /* gold hairline seam */
+  content:"";
+  position:absolute; left:0; right:0; bottom:0;
+  height: 0.022in;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 38%, var(--gold) 100%);
+}
+.back__mark{ width: 0.86in; height:auto; display:block; }
+.back__tag{
+  font-family: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  font-size: 6.2pt;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  white-space: nowrap;
+}
+
+.back__body{
+  position: absolute;
+  left: var(--safe); right: var(--safe);
+  top: 0.585in;
+  bottom: 0.215in;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.10in;
+}
+
+/* --- identity + contact ------------------------------------------------- */
+.who{ padding-top: 0.008in; }
+.who__name{
+  font-family: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 700;
+  font-size: 13.5pt;
+  line-height: 1;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  color: var(--navy);
+}
+.who__role{
+  margin-top: 0.024in;
+  font-size: 5.9pt;
+  font-weight: 600;
+  letter-spacing: 0.185em;
+  text-transform: uppercase;
+  color: #6C7B94;
+}
+.who__rule{
+  display:block;
+  width: 0.40in; height: 0.020in;
+  margin: 0.050in 0 0.056in;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 0.010in;
+}
+
+.contact{ list-style:none; }
+.contact li{
+  display: flex;
+  align-items: center;
+  gap: 0.058in;
+  margin-bottom: 0.026in;
+  font-size: 7.2pt;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: 0.008em;
+  color: #24344F;
+  white-space: nowrap;
+}
+.contact li:last-child{ margin-bottom: 0; }
+.contact svg{ width: 0.095in; height: 0.095in; fill: var(--navy); flex:none; opacity:.92; }
+.contact .is-phone{
+  font-family: "Avenir Next Condensed", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9.6pt;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  color: var(--navy);
+  margin-bottom: 0.038in;
+}
+.contact .is-phone svg{ width: 0.105in; height: 0.105in; fill: var(--gold); opacity:1; }
+
+/* --- QR ----------------------------------------------------------------- */
+.scan{
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.scan__code{
+  width: 0.84in; height: 0.84in;
+  display:block;
+  border: 0.012in solid #E2E7F0;
+  border-radius: 0.02in;
+}
+.scan__cap{
+  margin-top: 0.038in;
+  text-align: center;
+  font-size: 5.6pt;
+  font-weight: 600;
+  line-height: 1.28;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #6C7B94;
+}
+.scan__cap strong{ color: var(--navy); font-weight: 700; }
+
+/* --- services strip ----------------------------------------------------- */
+.back__foot{
+  position: absolute;
+  left: calc(var(--bleed) * -1);
+  right: calc(var(--bleed) * -1);
+  bottom: calc(var(--bleed) * -1);
+  height: calc(0.17in + var(--bleed));
+  padding-bottom: var(--bleed);
+  background: var(--paper-tint);
+  border-top: 0.010in solid #E2E7F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5.5pt;
+  font-weight: 600;
+  letter-spacing: 0.085em;
+  text-transform: uppercase;
+  color: #55657F;
+  white-space: nowrap;
+}
+.back__foot b{ color: var(--gold); font-weight: 700; }
+
+/* ==========================================================================
+   Screen preview chrome  (never printed)
+   ========================================================================== */
+
+body.preview{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.30in;
+  padding: 0.55in 0.4in;
+  background: radial-gradient(circle at 50% 0%, #8A94A6, #5A6474);
+}
+body.preview .sheet{ display:flex; gap:0.34in; flex-wrap:wrap; justify-content:center; }
+body.preview .slot{ display:flex; flex-direction:column; align-items:center; gap:0.10in; }
+body.preview .slot__label{
+  font-size: 8pt; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#EDF1F7;
+}
+body.preview .card{
+  border-radius: 0.02in;
+  box-shadow: 0 0.06in 0.22in rgba(0,0,0,.38);
+}
+body.preview .hint{
+  max-width: 7.6in; text-align:center; color:#EDF1F7; font-size:8.5pt; line-height:1.6;
+}
+body.preview .hint kbd{
+  background:rgba(255,255,255,.2); border-radius:3px; padding:1px 5px; font-family:inherit;
+}
+
+body.print{ background:#fff; display:block; padding:0; }
+body.print .sheet{ display:block; }
+body.print .slot__label, body.print .hint{ display:none; }
+body.print .slot{ display:block; }
+body.print .card{ break-after: page; page-break-after: always; box-shadow:none; border-radius:0; }
+body.print .slot:last-child .card{ break-after: auto; page-break-after: auto; }
+
+/* ---------- proof guides (never in the file you send to the printer) ----- */
+.guide{ position:absolute; pointer-events:none; display:none; }
+body.guides .guide{ display:block; }
+.guide--trim{
+  left: var(--bleed); top: var(--bleed);
+  width: var(--trim-w); height: var(--trim-h);
+  outline: 0.008in dashed rgba(255,0,90,.85);
+}
+.guide--safe{
+  left: calc(var(--bleed) + var(--safe)); top: calc(var(--bleed) + var(--safe));
+  width: calc(var(--trim-w) - var(--safe) * 2);
+  height: calc(var(--trim-h) - var(--safe) * 2);
+  outline: 0.008in dashed rgba(0,220,255,.85);
+}
+
+@page{ size: 3.75in 2.25in; margin: 0; }
+</style>
+</head>
+
+<body class="preview">
+
+<div class="sheet">
+
+  <!-- ============================ FRONT ============================ -->
+  <div class="slot">
+    <span class="slot__label">Front</span>
+    <section class="card card--front">
+      <div class="fx fx--base"></div>
+      <div class="fx fx--glow"></div>
+      <div class="fx fx--grain"></div>
+
+      <div class="trim">
+        <div class="front__stage">
+          <img class="badge" src="assets/badge.png" alt="">
+          <div class="lockup">
+            <img class="wordmark" src="assets/wordmark.png" alt="Worldwide Handyman">
+            <div class="tagline">
+              <i class="tagline__rule"></i>
+              <span class="tagline__text">We Fix. You Relax.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="goldbar">
+          <span class="goldbar__phone">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+            +1 (437) 929-3015
+          </span>
+          <span class="goldbar__web">worldwidehandyman.ca</span>
+        </div>
+      </div>
+
+      <div class="guide guide--trim"></div>
+      <div class="guide guide--safe"></div>
+    </section>
+  </div>
+
+  <!-- ============================ BACK ============================= -->
+  <div class="slot">
+    <span class="slot__label">Back</span>
+    <section class="card card--back">
+      <div class="trim">
+
+        <header class="back__head">
+          <img class="back__mark" src="assets/wordmark.png" alt="Worldwide Handyman">
+          <span class="back__tag">We Fix. You Relax.</span>
+        </header>
+
+        <div class="back__body">
+          <div class="who">
+            <div class="who__name">Sercan</div>
+            <div class="who__role">Owner &amp; Handyman</div>
+            <i class="who__rule"></i>
+
+            <ul class="contact">
+              <li class="is-phone">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                +1 (437) 929-3015
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                sercan@worldwidehandyman.ca
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                worldwidehandyman.ca
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                Greater Toronto Area
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                Mon – Sat, 8 am – 8 pm
+              </li>
+            </ul>
+          </div>
+
+          <div class="scan">
+            <img class="scan__code" src="assets/qr-quote.png" alt="Scan for a free quote">
+            <div class="scan__cap">Scan for a<br><strong>free quote</strong></div>
+          </div>
+        </div>
+
+        <footer class="back__foot">
+          Repairs <b>·</b> Assembly <b>·</b> TV Mounting <b>·</b> Drywall <b>·</b> Plumbing <b>·</b> Lighting
+        </footer>
+
+      </div>
+
+      <div class="guide guide--trim"></div>
+      <div class="guide guide--safe"></div>
+    </section>
+  </div>
+
+</div>
+
+<p class="hint">
+  Trim 3.5&#8243; &times; 2&#8243; &middot; bleed 0.125&#8243; on every edge &middot; safe margin 0.125&#8243; inside trim.<br>
+  Run <kbd>python3 build.py</kbd> to regenerate the print PDF, the proof and the 300&nbsp;dpi PNGs.
+</p>
+
+</body>
+</html>
