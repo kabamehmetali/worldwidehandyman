@@ -47,8 +47,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             db()->prepare('UPDATE pages SET slug = ?, title = ?, meta_description = ?, content = ?, is_published = ? WHERE id = ?')
                 ->execute([$page['slug'], $page['title'], $page['meta_description'], $page['content'], $page['is_published'], $id]);
             if ($oldSlug !== '' && $oldSlug !== $page['slug']) {
-                db()->prepare('UPDATE nav_links SET url = ? WHERE url = ?')
-                    ->execute(['page.php?slug=' . $page['slug'], 'page.php?slug=' . $oldSlug]);
+                db()->prepare('UPDATE nav_links SET url = ? WHERE url IN (?, ?, ?)')
+                    ->execute([
+                        'pages/' . $page['slug'],
+                        'pages/' . $oldSlug,
+                        'page?slug=' . $oldSlug,
+                        'page.php?slug=' . $oldSlug,
+                    ]);
             }
             flash_set('success', 'Page updated.');
         } else {
@@ -58,9 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($addToNav) {
-            $navUrl = 'page.php?slug=' . $page['slug'];
-            $stmt = db()->prepare('SELECT id FROM nav_links WHERE url = ?');
-            $stmt->execute([$navUrl]);
+            $navUrl = 'pages/' . $page['slug'];
+            $stmt = db()->prepare('SELECT id FROM nav_links WHERE url IN (?, ?, ?)');
+            $stmt->execute([
+                $navUrl,
+                'page?slug=' . $page['slug'],
+                'page.php?slug=' . $page['slug'],
+            ]);
             if (!$stmt->fetch()) {
                 // Insert just before the CTA button(s) so the gold button stays last
                 $ctaMin = db()->query('SELECT MIN(sort_order) FROM nav_links WHERE is_cta = 1')->fetchColumn();
@@ -99,7 +108,7 @@ require __DIR__ . '/includes/header.php';
             <div class="col-md-5">
                 <label class="form-label" for="p-slug">URL Slug <span class="text-muted fw-normal">(auto from title if empty)</span></label>
                 <div class="input-group">
-                    <span class="input-group-text">page.php?slug=</span>
+                    <span class="input-group-text">pages/</span>
                     <input class="form-control" type="text" id="p-slug" name="slug" maxlength="120" value="<?= esc($page['slug']) ?>">
                 </div>
             </div>

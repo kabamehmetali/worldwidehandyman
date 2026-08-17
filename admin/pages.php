@@ -11,7 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$id]);
         if ($row = $stmt->fetch()) {
             // remove any nav links pointing at this page
-            db()->prepare('DELETE FROM nav_links WHERE url = ?')->execute(['page.php?slug=' . $row['slug']]);
+            db()->prepare('DELETE FROM nav_links WHERE url IN (?, ?, ?)')->execute([
+                'pages/' . $row['slug'],
+                'page?slug=' . $row['slug'],
+                'page.php?slug=' . $row['slug'],
+            ]);
         }
         db()->prepare('DELETE FROM pages WHERE id = ?')->execute([$id]);
         flash_set('success', 'Page deleted (and its navigation link, if any).');
@@ -41,7 +45,7 @@ $pages = db()->query('SELECT * FROM pages ORDER BY title ASC')->fetchAll();
                 <?php foreach ($pages as $p): ?>
                     <tr class="<?= $p['is_published'] ? '' : 'opacity-50' ?>">
                         <td><strong><?= esc($p['title']) ?></strong></td>
-                        <td><a href="<?= esc(base_url('page.php?slug=' . urlencode($p['slug']))) ?>" target="_blank" rel="noopener"><code>page.php?slug=<?= esc($p['slug']) ?></code> <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i></a></td>
+                        <td><a href="<?= esc(custom_page_url($p['slug'])) ?>" target="_blank" rel="noopener"><code>pages/<?= esc($p['slug']) ?></code> <i class="fa-solid fa-arrow-up-right-from-square fa-xs"></i></a></td>
                         <td><small><?= esc(date('M j, Y', strtotime($p['updated_at']))) ?></small></td>
                         <td>
                             <form method="post"><?= csrf_field() ?>

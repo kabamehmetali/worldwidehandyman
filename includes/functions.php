@@ -81,7 +81,7 @@ function clean_urls_enabled(): bool
     }
 
     foreach ($_SERVER as $key => $value) {
-        if ($value === '1' && substr($key, -15) === 'WWH_CLEAN_URLS') {
+        if ($value === '1' && str_ends_with($key, 'WWH_CLEAN_URLS')) {
             return $enabled = true;
         }
     }
@@ -89,12 +89,12 @@ function clean_urls_enabled(): bool
 }
 
 /**
- * Resolve public routes to real PHP endpoints.
+ * Resolve public routes to their public canonical URL.
  *
  * The site supports clean URLs through .htaccess, but some production hosts
- * do not enable per-directory rewrite rules. Sending links to their real PHP
- * files keeps every page reachable in that environment instead of falling
- * through to the host's homepage route.
+ * do not enable per-directory rewrite rules. In that case links fall back to
+ * their real PHP endpoints so pages remain reachable. When clean URLs are
+ * available, every internal link uses the same URL Google is asked to index.
  */
 function public_route_path(string $path): string
 {
@@ -110,10 +110,28 @@ function public_route_path(string $path): string
     $route    = substr($path, 0, $suffixAt);
     $suffix   = substr($path, $suffixAt);
 
+    // Legacy custom-page links may still be stored in navigation rows. Route
+    // them through the canonical handler below instead of emitting page.php.
+    if ($route === 'page.php') {
+        $route = 'page';
+    }
+
     if (preg_match('~\.(?:php|html?|css|js|png|jpe?g|gif|webp|svg|ico|woff2?|ttf|map|txt|xml|pdf|mp4|webm)$~i', $route)
         || str_starts_with($route, 'assets/')
         || str_starts_with($route, 'admin/')) {
         return $path;
+    }
+
+    if ($route === 'page') {
+        $query = [];
+        parse_str(ltrim($suffix, '?'), $query);
+        $slug = trim((string) ($query['slug'] ?? ''));
+        if ($slug !== '' && preg_match('/^[a-z0-9-]+$/i', $slug)) {
+            if (clean_urls_enabled()) {
+                return 'pages/' . rawurlencode($slug);
+            }
+            return 'page.php?slug=' . rawurlencode($slug);
+        }
     }
 
     // Where rewrite rules are running, emit the clean keyword URL as-is.
@@ -147,6 +165,24 @@ function public_route_path(string $path): string
     }
 
     return $path;
+}
+
+/**
+ * Canonical public path for an admin-authored page.
+ *
+ * The clean path is used whenever rewrites are available. The legacy endpoint
+ * remains the canonical fallback on hosts that cannot serve /pages/{slug}.
+ */
+function custom_page_path(string $slug): string
+{
+    $slug = rawurlencode($slug);
+    return clean_urls_enabled() ? 'pages/' . $slug : 'page?slug=' . $slug;
+}
+
+/** Canonical public URL for an admin-authored page. */
+function custom_page_url(string $slug): string
+{
+    return base_url(custom_page_path($slug));
 }
 
 /** Append a source route's query string to a mapped PHP query string. */

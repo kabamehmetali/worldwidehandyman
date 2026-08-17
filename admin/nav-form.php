@@ -17,8 +17,8 @@ if ($id > 0) {
 
 // Suggestions for the URL dropdown
 $builtinTargets = [
-    'index.php' => 'Home', 'services.php' => 'Services', 'about.php' => 'About',
-    'gallery.php' => 'Gallery', 'faq.php' => 'FAQ', 'contact.php' => 'Contact', 'quote.php' => 'Get a Quote',
+    '/' => 'Home', 'services' => 'Services', 'about' => 'About',
+    'gallery' => 'Gallery', 'faq' => 'FAQ', 'contact' => 'Contact', 'quote' => 'Get a Quote',
 ];
 $customPages = db()->query('SELECT slug, title FROM pages ORDER BY title ASC')->fetchAll();
 
@@ -74,16 +74,16 @@ require __DIR__ . '/includes/header.php';
                     </div>
                     <div class="col-md-6">
                         <label class="form-label" for="n-url">URL *</label>
-                        <input class="form-control" type="text" id="n-url" name="url" maxlength="255" required value="<?= esc($link['url']) ?>" list="url-suggestions" placeholder="services.php or https://…">
+                        <input class="form-control" type="text" id="n-url" name="url" maxlength="255" required value="<?= esc($link['url']) ?>" list="url-suggestions" placeholder="services or https://…">
                         <datalist id="url-suggestions">
                             <?php foreach ($builtinTargets as $url => $label): ?>
                                 <option value="<?= esc($url) ?>"><?= esc($label) ?></option>
                             <?php endforeach; ?>
                             <?php foreach ($customPages as $p): ?>
-                                <option value="page.php?slug=<?= esc($p['slug']) ?>"><?= esc($p['title']) ?> (custom page)</option>
+                                <option value="pages/<?= esc($p['slug']) ?>"><?= esc($p['title']) ?> (custom page)</option>
                             <?php endforeach; ?>
                         </datalist>
-                        <div class="form-text">Pick a suggestion or type any internal page / external https:// link.</div>
+                        <div class="form-text">Pick a suggestion or type a clean internal URL / external https:// link.</div>
                     </div>
                     <div class="col-12 d-flex flex-wrap gap-4">
                         <div class="form-check form-switch">

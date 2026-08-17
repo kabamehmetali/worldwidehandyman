@@ -15,7 +15,7 @@ if (!$page) {
 
 $pageTitle = $page['title'];
 $metaDescription = $page['meta_description'] !== '' ? $page['meta_description'] : setting('meta_description');
-$canonicalPath = 'page?slug=' . rawurlencode($slug);
+$canonicalPath = custom_page_path($slug);
 $breadcrumbs = [['label' => 'Home', 'url' => ''], ['label' => $page['title']]];
 require __DIR__ . '/includes/header.php';
 ?>

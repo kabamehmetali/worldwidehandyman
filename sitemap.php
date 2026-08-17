@@ -32,7 +32,7 @@ $add('quote', '0.8', 'yearly');
 
 /* -------------------------------------------------- admin-authored pages */
 foreach (seo_query('SELECT slug, updated_at FROM pages WHERE is_published = 1') as $page) {
-    $add('page?slug=' . $page['slug'], '0.5', 'monthly', $page['updated_at']);
+    $add(custom_page_path($page['slug']), '0.5', 'monthly', $page['updated_at']);
 }
 
 /* ------------------------------------------------------- service landing */

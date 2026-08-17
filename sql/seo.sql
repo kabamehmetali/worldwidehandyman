@@ -143,3 +143,8 @@ INSERT IGNORE INTO settings (setting_key, setting_value) VALUES
 -- instead of a hand-written entry in the `pages` table.
 UPDATE nav_links SET url = 'service-areas' WHERE url IN ('page?slug=service-areas', 'page.php?slug=service-areas');
 DELETE FROM pages WHERE slug = 'service-areas';
+
+-- Keep navigation on each custom page's one canonical URL.
+UPDATE nav_links
+SET url = CONCAT('pages/', SUBSTRING_INDEX(url, 'slug=', -1))
+WHERE url LIKE 'page?slug=%' OR url LIKE 'page.php?slug=%';

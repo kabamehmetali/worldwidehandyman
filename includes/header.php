@@ -14,6 +14,9 @@ $breadcrumbs     = $breadcrumbs ?? [];
 $schemas         = $schemas ?? [];
 
 $canonical = canonical_url($canonicalPath);
+if ($canonicalPath !== null) {
+    seo_redirect_to_canonical($canonical);
+}
 
 if ($pageTitleFull !== null && $pageTitleFull !== '') {
     $documentTitle = $pageTitleFull;

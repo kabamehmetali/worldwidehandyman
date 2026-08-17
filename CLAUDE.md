@@ -22,7 +22,7 @@ Single DB `worldwidehandyman_db` (root, no password, host 127.0.0.1). Import/res
 
 **Warning:** `sql/schema.sql` DROPs and recreates all tables and reseeds content — it wipes live data.
 
-Tables: `users` (admin auth), `settings` (key-value — all site config), `nav_links` (menu, `is_cta` renders as gold button), `pages` (custom pages served by `page.php?slug=`), `services`, `gallery`, `testimonials`, `faqs`, `quotes` (Get-a-Quote submissions, `sms_sent`/`sms_error` track Twilio), `contact_messages`.
+Tables: `users` (admin auth), `settings` (key-value — all site config), `nav_links` (menu, `is_cta` renders as gold button), `pages` (custom pages served at `/pages/{slug}`), `services`, `gallery`, `testimonials`, `faqs`, `quotes` (Get-a-Quote submissions, `sms_sent`/`sms_error` track Twilio), `contact_messages`.
 
 SEO landing-page tables: `seo_locations`, `seo_services`, `seo_service_locations` — see the SEO section below. `sql/schema.sql` creates these with `IF NOT EXISTS`, so re-running it resets the site content **without** destroying generated landing pages. To rebuild those three tables from scratch, run `sql/seo.sql` (drops and recreates them) then re-import `sql/seo-seed.sql`.
 
@@ -35,7 +35,7 @@ SEO landing-page tables: `seo_locations`, `seo_services`, `seo_service_locations
 - `includes/header.php` / `footer.php` — shared layout; header emits CSS variables from the color settings, so admin color changes restyle the whole site.
 - **Mobile navigation is custom, not Bootstrap collapse.** Below 992px `#mainNav` (`.site-nav-panel`) becomes a `position: fixed; inset: 0` overlay driven by a `body.nav-open` class; `#navBurger`'s three spans morph into an X. Links carry `style="--i: N"` for the staggered reveal. Logic lives in the "Full-screen mobile navigation" block of `assets/js/scripts.js` (Escape, link-click close, Tab focus trap, auto-close on resize ≥992px). Do not re-add `data-bs-toggle="collapse"` or the `.navbar-collapse` class.
 - Frontend pages at root require the header/footer; `quote.php` and `contact.php` handle their own POST (CSRF + honeypot field `website`) before rendering.
-- `page.php?slug=x` renders rows from `pages`; content is trusted admin-authored HTML (rendered unescaped by design).
+- `/pages/{slug}` renders rows from `pages`; old `page.php?slug=x` URLs permanently redirect when clean URLs are available. Content is trusted admin-authored HTML (rendered unescaped by design).
 
 ### Admin (`admin/`)
 
@@ -61,7 +61,7 @@ SEO landing-page tables: `seo_locations`, `seo_services`, `seo_service_locations
 | `$breadcrumbs` | `[['label' => 'Services', 'url' => 'services'], ['label' => 'TV Mounting']]` — drives both `breadcrumb_html()` and BreadcrumbList schema |
 | `$schemas` | extra JSON-LD nodes merged into the `@graph` |
 
-The header always emits `LocalBusiness` + `WebSite` + `WebPage` (+ `BreadcrumbList` when `$breadcrumbs` is set) as a single `@graph`. Pages add `Service`, `FAQPage`, `HowTo`, `ItemList`, `Person`, `ContactPage`, `ImageGallery` via `$schemas`. Builders: `schema_service()`, `schema_faq()`, `schema_item_list()`, `schema_breadcrumbs()`.
+The header always emits `LocalBusiness` + `WebSite` + `WebPage` (+ `BreadcrumbList` when `$breadcrumbs` is set) as a single `@graph`. Pages add `Service`, `FAQPage`, `HowTo`, `ItemList`, `Person`, `ContactPage`, `ImageGallery` via `$schemas`. Builders: `schema_service()`, `schema_faq()`, `schema_item_list()`, `schema_breadcrumbs()`. It also 301-redirects safe requests for legacy `.php`, trailing-slash, or non-canonical host/protocol variants to the configured canonical URL.
 
 `seo_query()` swallows "table doesn't exist" errors and returns `[]`, so the site still runs before `sql/seo.sql` has been imported.
 

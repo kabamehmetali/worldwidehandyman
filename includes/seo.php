@@ -50,8 +50,9 @@ function site_origin(): string
         }
     }
 
+    $forwardedProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')[0]));
     $https = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
-        || strtolower($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https'
+        || $forwardedProto === 'https'
         || (int) ($_SERVER['SERVER_PORT'] ?? 80) === 443;
 
     $origin = ($https ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'localhost');
@@ -80,6 +81,76 @@ function canonical_url(?string $path = null): string
     // /index.php and /some/dir/ both canonicalise to the directory itself
     $uri = preg_replace('~/index\.php$~i', '/', $uri);
     return site_origin() . $uri;
+}
+
+/**
+ * The origin that the visitor actually requested, without consulting the SEO
+ * setting. It lets public pages redirect old URL variants to their configured
+ * canonical URL without ever reflecting an untrusted host in the redirect.
+ */
+function seo_request_origin(): string
+{
+    $host = trim((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    if ($host === '') {
+        return '';
+    }
+
+    $forwardedProto = strtolower(trim(explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '')[0]));
+    $https = (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off')
+        || $forwardedProto === 'https'
+        || (int) ($_SERVER['SERVER_PORT'] ?? 80) === 443;
+
+    return ($https ? 'https://' : 'http://') . strtolower($host);
+}
+
+/**
+ * Permanently consolidate a public page's legacy URL variants.
+ *
+ * The same document was historically reachable through both clean URLs and
+ * direct PHP endpoints (for example /about and /about.php). A canonical tag
+ * is only a hint, so redirecting the old path is the unambiguous signal. A
+ * query string on an otherwise canonical URL is retained for analytics; the
+ * HTML canonical still omits it. Only safe GET/HEAD requests are redirected.
+ */
+function seo_redirect_to_canonical(string $canonical): void
+{
+    $method = strtoupper((string) ($_SERVER['REQUEST_METHOD'] ?? 'GET'));
+    if (!in_array($method, ['GET', 'HEAD'], true) || headers_sent()) {
+        return;
+    }
+
+    $canonicalParts = parse_url($canonical);
+    if (!is_array($canonicalParts) || empty($canonicalParts['scheme']) || empty($canonicalParts['host'])) {
+        return;
+    }
+
+    $requestUri = (string) ($_SERVER['REQUEST_URI'] ?? '');
+    $requestPath = parse_url($requestUri, PHP_URL_PATH);
+    if (!is_string($requestPath) || $requestPath === '') {
+        return;
+    }
+
+    $canonicalPath = (string) ($canonicalParts['path'] ?? '/');
+    $canonicalOrigin = strtolower($canonicalParts['scheme'] . '://' . $canonicalParts['host']
+        . (isset($canonicalParts['port']) ? ':' . $canonicalParts['port'] : ''));
+    $requestOrigin = seo_request_origin();
+
+    if ($requestOrigin === $canonicalOrigin && $requestPath === $canonicalPath) {
+        return;
+    }
+
+    $target = $canonical;
+    // Keep campaign parameters when only the host or protocol needs fixing.
+    // When the path itself is legacy, drop its query string with the duplicate.
+    if ($requestPath === $canonicalPath) {
+        $requestQuery = parse_url($requestUri, PHP_URL_QUERY);
+        if (is_string($requestQuery) && $requestQuery !== '') {
+            $target .= '?' . $requestQuery;
+        }
+    }
+
+    header('Location: ' . $target, true, 301);
+    exit;
 }
 
 /* -------------------------------------------------------------- text bits */
