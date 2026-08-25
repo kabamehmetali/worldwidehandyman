@@ -52,7 +52,7 @@ foreach ($schemas as $extraNode) {
     <meta name="description" content="<?= esc($metaDescription) ?>">
     <link rel="canonical" href="<?= esc($canonical) ?>">
     <meta name="robots" content="<?= esc($robotsFull) ?>">
-    <meta name="author" content="<?= esc(setting('seo_owner_name', 'Sercan')) ?>">
+    <meta name="author" content="<?= esc(setting('seo_owner_name', 'Sercan Yildirim')) ?>">
     <meta name="theme-color" content="<?= esc(setting('color_primary', '#10203F')) ?>">
 
     <!-- Local search signals -->

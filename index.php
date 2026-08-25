@@ -123,7 +123,7 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
         <div class="row align-items-center g-5">
             <div class="col-lg-5 reveal">
                 <div class="about-media">
-                    <img src="<?= esc(base_url(setting('home_about_image'))) ?>" alt="Sercan — Worldwide Handyman">
+                    <img src="<?= esc(base_url(setting('home_about_image'))) ?>" alt="Sercan Yildirim — Worldwide Handyman">
                     <div class="about-badge">
                         <div class="num"><?= esc(setting('stat3_number')) ?>+</div>
                         <div class="lbl">Years of<br>Experience</div>
@@ -133,7 +133,7 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
             <div class="col-lg-7 reveal">
                 <span class="section-eyebrow"><i class="fa-solid fa-user-check"></i> About Me</span>
                 <h2 class="section-title"><?= esc(setting('home_about_title')) ?></h2>
-                <p>Hi, I'm <strong>Sercan</strong> — a professional handyman proudly serving homeowners and businesses throughout the Greater Toronto Area. I make repairs and improvements simple and stress-free by showing up on time, communicating clearly, and completing every project with care.</p>
+                <p>Hi, I'm <strong>Sercan Yildirim</strong> — a professional handyman proudly serving homeowners and businesses throughout the Greater Toronto Area. I make repairs and improvements simple and stress-free by showing up on time, communicating clearly, and completing every project with care.</p>
                 <ul class="check-list">
                     <li><i class="fa-solid fa-circle-check"></i> One trusted professional for repairs, installations, assembly &amp; maintenance</li>
                     <li><i class="fa-solid fa-circle-check"></i> Honest recommendations and pricing agreed before work begins</li>

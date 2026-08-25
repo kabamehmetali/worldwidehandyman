@@ -118,7 +118,7 @@ INSERT IGNORE INTO settings (setting_key, setting_value) VALUES
 ('gtm_id', ''),
 -- business schema
 ('seo_business_type', 'HomeAndConstructionBusiness'),
-('seo_owner_name', 'Sercan'),
+('seo_owner_name', 'Sercan Yildirim'),
 ('seo_price_range', '$$'),
 ('seo_payment_accepted', 'Cash, Debit, Credit Card, e-Transfer'),
 ('seo_street_address', ''),

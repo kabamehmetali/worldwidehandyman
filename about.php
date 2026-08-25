@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/includes/seo.php';
 
-$pageTitle       = 'About Sercan, Your GTA Handyman';
-$metaDescription = 'Meet Sercan — a professional handyman serving homeowners and businesses across the Greater Toronto Area with reliable, high-quality workmanship.';
+$pageTitle       = 'About Sercan Yildirim, Your GTA Handyman';
+$metaDescription = 'Meet Sercan Yildirim — a professional handyman serving homeowners and businesses across the Greater Toronto Area with reliable, high-quality workmanship.';
 $canonicalPath   = 'about';
 $ogImage         = 'assets/img/about-hero.png';
 $ogType          = 'profile';
@@ -10,9 +10,9 @@ $breadcrumbs     = [['label' => 'Home', 'url' => ''], ['label' => 'About']];
 $schemas         = [[
     '@type'      => 'Person',
     '@id'        => canonical_url('about') . '#owner',
-    'name'       => setting('seo_owner_name', 'Sercan'),
+    'name'       => setting('seo_owner_name', 'Sercan Yildirim'),
     'jobTitle'   => 'Handyman, Owner and Operator',
-    'image'      => site_url('assets/img/sercan.jpg'),
+    'image'      => site_url('assets/img/sercan.png'),
     'telephone'  => setting('phone_link') !== '' ? setting('phone_link') : setting('phone'),
     'email'      => setting('email'),
     'worksFor'   => ['@id' => site_url() . '#business'],
@@ -28,25 +28,25 @@ require __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<!-- Meet Sercan -->
+<!-- Meet Sercan Yildirim -->
 <section class="section">
     <div class="container">
         <div class="row align-items-center g-5">
             <div class="col-lg-5 reveal">
                 <div class="about-photo-frame">
-                    <img src="<?= esc(base_url('assets/img/sercan.jpg')) ?>" alt="Sercan — owner of Worldwide Handyman">
+                    <img src="<?= esc(base_url('assets/img/sercan.png')) ?>" alt="Sercan Yildirim — owner of Worldwide Handyman">
                 </div>
             </div>
             <div class="col-lg-7 reveal">
-                <span class="section-eyebrow"><i class="fa-solid fa-user-check"></i> Meet Sercan</span>
+                <span class="section-eyebrow"><i class="fa-solid fa-user-check"></i> Meet Sercan Yildirim</span>
                 <h2 class="section-title">Your Trusted Local Handyman<br>Across the Greater Toronto Area</h2>
-                <p>Hi, I'm Sercan, a professional handyman proudly serving homeowners and businesses throughout the Greater Toronto Area. With years of hands-on experience, I provide reliable, high-quality solutions for a wide range of home repairs, maintenance, installations, and improvement projects.</p>
+                <p>Hi, I'm Sercan Yildirim, a professional handyman proudly serving homeowners and businesses throughout the Greater Toronto Area. With years of hands-on experience, I provide reliable, high-quality solutions for a wide range of home repairs, maintenance, installations, and improvement projects.</p>
                 <p>I believe every job — big or small — deserves careful attention, quality workmanship, and professional service. My goal is to make repairs and improvements simple and stress-free by showing up on time, communicating clearly, and completing every project with care.</p>
                 <p>Whether you need something repaired, installed, assembled, maintained, or improved, you can count on me for dependable service and work done right.</p>
                 <div class="d-flex align-items-center gap-3 mt-4">
                     <img src="<?= esc(base_url(setting('logo_icon'))) ?>" alt="" height="56">
                     <div class="signature-line">
-                        Sercan
+                        Sercan Yildirim
                         <small>Owner &amp; Operator, <?= esc(setting('site_name')) ?></small>
                     </div>
                 </div>
@@ -113,7 +113,7 @@ require __DIR__ . '/includes/header.php';
             <span class="value-pill"><i class="fa-solid fa-house-chimney"></i> Respect for Your Property</span>
             <span class="value-pill"><i class="fa-solid fa-star"></i> Customer Satisfaction</span>
         </div>
-        <div class="about-strip mt-5 reveal" style="background-image: url('<?= esc(base_url('assets/img/hero-about.jpg')) ?>');" role="img" aria-label="Sercan in front of the Toronto skyline"></div>
+        <div class="about-strip mt-5 reveal" style="background-image: url('<?= esc(base_url('assets/img/hero-about.jpg')) ?>');" role="img" aria-label="Sercan Yildirim in front of the Toronto skyline"></div>
     </div>
 </section>
 

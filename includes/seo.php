@@ -438,7 +438,7 @@ function schema_business(): array
         ],
         'founder' => [
             '@type'    => 'Person',
-            'name'     => setting('seo_owner_name', 'Sercan'),
+            'name'     => setting('seo_owner_name', 'Sercan Yildirim'),
             'jobTitle' => 'Owner and Operator',
         ],
     ];
