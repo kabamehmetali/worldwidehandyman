@@ -104,7 +104,7 @@ $footerAreas = seo_locations();
 
 <a href="#" class="back-to-top" id="backToTop" aria-label="Back to top"><i class="fa-solid fa-chevron-up"></i></a>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="<?= esc(base_url('assets/js/scripts.js')) ?>?v=<?= @filemtime(APP_ROOT . '/assets/js/scripts.js') ?>"></script>
+<script src="<?= esc(asset_url('assets/vendor/bootstrap/js/bootstrap.bundle.min.js')) ?>"></script>
+<script src="<?= esc(asset_url('assets/js/scripts.js')) ?>"></script>
 </body>
 </html>

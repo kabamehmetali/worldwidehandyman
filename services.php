@@ -36,7 +36,7 @@ $legacyServices = $seoServices ? [] : db()->query(
 )->fetchAll();
 ?>
 
-<section class="page-banner page-banner-portrait services-banner" style="background-image: url('<?= esc(base_url('assets/img/service-areas-hero-painting.png')) ?>');">
+<section class="page-banner page-banner-portrait services-banner">
     <div class="container">
         <h1>Our Services</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

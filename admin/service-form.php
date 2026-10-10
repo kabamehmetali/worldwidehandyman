@@ -3,7 +3,15 @@ require_once __DIR__ . '/includes/auth.php';
 require_admin();
 
 $id = (int) ($_GET['id'] ?? 0);
-$service = ['title' => '', 'icon' => 'fa-solid fa-screwdriver-wrench', 'short_desc' => '', 'job_list' => '', 'image_path' => '', 'is_active' => 1];
+$service = ['title' => '', 'seo_slug' => '', 'icon' => 'fa-solid fa-screwdriver-wrench', 'short_desc' => '', 'job_list' => '', 'image_path' => '', 'is_active' => 1];
+
+// Landing pages a card can point at, so the homepage feeds the service pages.
+$seoChoices = [];
+try {
+    $seoChoices = db()->query('SELECT slug, name FROM seo_services WHERE is_published = 1 ORDER BY sort_order ASC, name ASC')->fetchAll();
+} catch (PDOException $e) {
+    $seoChoices = []; // seo tables not imported yet
+}
 
 if ($id > 0) {
     $stmt = db()->prepare('SELECT * FROM services WHERE id = ?');
@@ -20,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     admin_csrf_or_die();
 
     $service['title'] = trim($_POST['title'] ?? '');
+    $service['seo_slug'] = trim($_POST['seo_slug'] ?? '');
     $service['icon'] = trim($_POST['icon'] ?? '');
     $service['short_desc'] = trim($_POST['short_desc'] ?? '');
     $service['job_list'] = trim($_POST['job_list'] ?? '');
@@ -27,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($service['title'] === '' || mb_strlen($service['title']) > 150) {
         $errors[] = 'Please enter a title (max 150 characters).';
+    }
+    $validSlugs = array_column($seoChoices, 'slug');
+    if ($service['seo_slug'] !== '' && !in_array($service['seo_slug'], $validSlugs, true)) {
+        $service['seo_slug'] = '';
     }
     if ($service['icon'] === '' || mb_strlen($service['icon']) > 80) {
         $service['icon'] = 'fa-solid fa-screwdriver-wrench';
@@ -54,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!$errors) {
         if ($id > 0) {
-            db()->prepare('UPDATE services SET title = ?, icon = ?, short_desc = ?, job_list = ?, image_path = ?, is_active = ? WHERE id = ?')
-                ->execute([$service['title'], $service['icon'], $service['short_desc'], $service['job_list'], $service['image_path'], $service['is_active'], $id]);
+            db()->prepare('UPDATE services SET title = ?, seo_slug = ?, icon = ?, short_desc = ?, job_list = ?, image_path = ?, is_active = ? WHERE id = ?')
+                ->execute([$service['title'], $service['seo_slug'], $service['icon'], $service['short_desc'], $service['job_list'], $service['image_path'], $service['is_active'], $id]);
             flash_set('success', 'Service updated.');
         } else {
             $max = (int) db()->query('SELECT COALESCE(MAX(sort_order), 0) FROM services')->fetchColumn();
-            db()->prepare('INSERT INTO services (title, icon, short_desc, job_list, image_path, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)')
-                ->execute([$service['title'], $service['icon'], $service['short_desc'], $service['job_list'], $service['image_path'], $max + 1, $service['is_active']]);
+            db()->prepare('INSERT INTO services (title, seo_slug, icon, short_desc, job_list, image_path, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+                ->execute([$service['title'], $service['seo_slug'], $service['icon'], $service['short_desc'], $service['job_list'], $service['image_path'], $max + 1, $service['is_active']]);
             flash_set('success', 'Service added.');
         }
         redirect('admin/services.php');
@@ -84,6 +97,18 @@ require __DIR__ . '/includes/header.php';
                     <label class="form-label" for="s-title">Title *</label>
                     <input class="form-control" type="text" id="s-title" name="title" maxlength="150" required value="<?= esc($service['title']) ?>">
                 </div>
+                <?php if ($seoChoices): ?>
+                    <div class="mb-3">
+                        <label class="form-label" for="s-slug">Links To <span class="text-muted fw-normal">(optional)</span></label>
+                        <select class="form-select" id="s-slug" name="seo_slug">
+                            <option value="">&mdash; no link, card is not clickable &mdash;</option>
+                            <?php foreach ($seoChoices as $choice): ?>
+                                <option value="<?= esc($choice['slug']) ?>"<?= ($service['seo_slug'] ?? '') === $choice['slug'] ? ' selected' : '' ?>><?= esc($choice['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                        <div class="form-text">Pick the service page this card should open. Cards with a page set become clickable on the homepage.</div>
+                    </div>
+                <?php endif; ?>
                 <div class="mb-3">
                     <label class="form-label" for="s-icon">Icon (Font Awesome class)</label>
                     <div class="input-group">

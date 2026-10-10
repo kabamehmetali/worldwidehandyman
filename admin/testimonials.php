@@ -31,7 +31,7 @@ $testimonials = db()->query('SELECT * FROM testimonials ORDER BY sort_order ASC,
     <?php if ($testimonials): ?>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-                <thead><tr><th style="width:70px;">Order</th><th>Author</th><th>Quote</th><th>Rating</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
+                <thead><tr><th class="col-order">Order</th><th>Author</th><th>Quote</th><th>Rating</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 <?php foreach ($testimonials as $i => $t): ?>
                     <tr class="<?= $t['is_active'] ? '' : 'opacity-50' ?>">
@@ -40,7 +40,7 @@ $testimonials = db()->query('SELECT * FROM testimonials ORDER BY sort_order ASC,
                             <form class="d-inline" method="post"><?= csrf_field() ?><input type="hidden" name="id" value="<?= (int) $t['id'] ?>"><input type="hidden" name="action" value="move_down"><button class="btn btn-sm btn-light" <?= $i === count($testimonials) - 1 ? 'disabled' : '' ?>><i class="fa-solid fa-chevron-down"></i></button></form>
                         </td>
                         <td><strong><?= esc($t['author']) ?></strong><br><small class="text-muted"><?= esc($t['location']) ?></small></td>
-                        <td class="text-truncate" style="max-width: 340px;"><?= esc($t['quote_text']) ?></td>
+                        <td class="text-truncate col-quote"><?= esc($t['quote_text']) ?></td>
                         <td><span class="text-warning"><?php for ($s = 0; $s < (int) $t['rating']; $s++): ?><i class="fa-solid fa-star"></i><?php endfor; ?></span></td>
                         <td>
                             <form method="post"><?= csrf_field() ?>

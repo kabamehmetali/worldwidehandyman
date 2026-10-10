@@ -101,7 +101,7 @@ $recentMessages = db()->query('SELECT * FROM contact_messages ORDER BY created_a
                 <?php foreach ($recentMessages as $m): ?>
                     <a class="d-block text-decoration-none border-bottom py-2" href="<?= esc(base_url('admin/message-view.php?id=' . (int) $m['id'])) ?>">
                         <div class="d-flex justify-content-between align-items-center">
-                            <strong class="<?= $m['is_read'] ? 'text-muted' : '' ?>"><?= $m['is_read'] ? '' : '<i class="fa-solid fa-circle text-danger me-1" style="font-size:.45rem; vertical-align: middle;"></i>' ?><?= esc($m['name']) ?></strong>
+                            <strong class="<?= $m['is_read'] ? 'text-muted' : '' ?>"><?= $m['is_read'] ? '' : '<i class="fa-solid fa-circle text-danger me-1 unread-dot"></i>' ?><?= esc($m['name']) ?></strong>
                             <small class="text-muted"><?= esc(date('M j', strtotime($m['created_at']))) ?></small>
                         </div>
                         <small class="text-muted d-block text-truncate"><?= esc($m['subject'] !== '' ? $m['subject'] : mb_substr($m['message'], 0, 80)) ?></small>

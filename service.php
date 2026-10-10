@@ -65,7 +65,8 @@ if ($process) {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url($heroImage)) ?>');">
+<section class="page-banner page-banner-portrait">
+    <img class="banner-img" src="<?= esc(base_url($heroImage)) ?>" alt="" fetchpriority="high">
     <div class="container">
         <h1><?= esc($service['h1'] !== '' ? $service['h1'] : $name) ?></h1>
         <?= breadcrumb_html($breadcrumbs) ?>

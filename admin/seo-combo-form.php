@@ -118,7 +118,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Search Listing</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Search Listing</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-6">
                 <label class="form-label" for="c-mt">Meta Title <small class="text-muted fw-normal">(30–50 characters)</small></label>
@@ -136,7 +136,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Unique Copy</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Unique Copy</h6>
         <div class="row g-3 mb-4">
             <div class="col-12">
                 <label class="form-label" for="c-intro">Intro * <small class="text-muted fw-normal">(70–110 words, plain text, blank line between paragraphs)</small></label>
@@ -173,15 +173,5 @@ require __DIR__ . '/includes/header.php';
         </div>
     </form>
 </div>
-
-<script>
-(function () {
-    'use strict';
-    document.querySelectorAll('[data-counter]').forEach(function (field) {
-        var out = document.getElementById(field.getAttribute('data-counter'));
-        field.addEventListener('input', function () { out.textContent = field.value.length; });
-    });
-}());
-</script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

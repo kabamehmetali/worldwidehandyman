@@ -36,7 +36,7 @@ $messages = db()->query('SELECT * FROM contact_messages ORDER BY created_at DESC
                             <?= esc($m['name']) ?><br>
                             <small class="text-muted fw-normal"><?= esc($m['email']) ?><?= $m['phone'] !== '' ? ' · ' . esc($m['phone']) : '' ?></small>
                         </td>
-                        <td class="text-truncate" style="max-width: 320px;"><?= esc($m['subject'] !== '' ? $m['subject'] : mb_substr($m['message'], 0, 60)) ?></td>
+                        <td class="text-truncate col-subject"><?= esc($m['subject'] !== '' ? $m['subject'] : mb_substr($m['message'], 0, 60)) ?></td>
                         <td><small><?= esc(date('M j, Y g:i a', strtotime($m['created_at']))) ?></small></td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-outline-secondary" href="<?= esc(base_url('admin/message-view.php?id=' . (int) $m['id'])) ?>" title="Read"><i class="fa-solid fa-eye"></i></a>

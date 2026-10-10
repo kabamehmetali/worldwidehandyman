@@ -77,7 +77,8 @@ if ($allServices) {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url($heroImage)) ?>');">
+<section class="page-banner page-banner-portrait">
+    <img class="banner-img" src="<?= esc(base_url($heroImage)) ?>" alt="" fetchpriority="high">
     <div class="container">
         <h1><?= esc($location['h1'] !== '' ? $location['h1'] : 'Handyman in ' . $name) ?></h1>
         <?= breadcrumb_html($breadcrumbs) ?>

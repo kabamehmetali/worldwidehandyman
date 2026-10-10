@@ -26,6 +26,13 @@
     if (burger && navPanel) {
         const body = document.body;
 
+        // Stagger index for the reveal, read by the stylesheet as var(--i).
+        // Set here, not as a style="" attribute: the site's
+        // Content-Security-Policy discards inline styles.
+        navPanel.querySelectorAll('.nav-item').forEach(function (item, i) {
+            item.style.setProperty('--i', i);
+        });
+
         const isOpen = function () { return body.classList.contains('nav-open'); };
 
         const focusables = function () {

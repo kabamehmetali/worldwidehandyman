@@ -31,7 +31,7 @@ $faqs = db()->query('SELECT * FROM faqs ORDER BY sort_order ASC, id ASC')->fetch
     <?php if ($faqs): ?>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-                <thead><tr><th style="width:70px;">Order</th><th>Question</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
+                <thead><tr><th class="col-order">Order</th><th>Question</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 <?php foreach ($faqs as $i => $f): ?>
                     <tr class="<?= $f['is_active'] ? '' : 'opacity-50' ?>">

@@ -209,22 +209,22 @@ function tab_link(string $tab, string $icon, string $label, string $active): voi
             </div>
             <div class="col-md-6">
                 <label class="form-label">Navbar / Footer Logo</label>
-                <div class="d-flex align-items-center gap-3 mb-2 p-2 rounded" style="background: #10203F;">
-                    <img src="<?= esc(base_url(setting('logo_nav'))) ?>" alt="" style="height: 48px;">
+                <div class="d-flex align-items-center gap-3 mb-2 p-2 rounded logo-preview-dark">
+                    <img class="logo-preview" src="<?= esc(base_url(setting('logo_nav'))) ?>" alt="">
                 </div>
                 <input class="form-control" type="file" name="logo_nav" accept="image/*">
             </div>
             <div class="col-md-6">
                 <label class="form-label">Icon / Favicon (square)</label>
                 <div class="d-flex align-items-center gap-3 mb-2">
-                    <img src="<?= esc(base_url(setting('logo_icon'))) ?>" alt="" style="height: 48px;">
+                    <img class="logo-preview" src="<?= esc(base_url(setting('logo_icon'))) ?>" alt="">
                 </div>
                 <input class="form-control" type="file" name="logo_icon" accept="image/*">
             </div>
             <div class="col-md-6">
                 <label class="form-label">Footer Logo (full logo with text)</label>
                 <div class="d-flex align-items-center gap-3 mb-2">
-                    <img src="<?= esc(base_url(setting('logo_footer', setting('logo_nav')))) ?>" alt="" style="height: 64px; border-radius: .4rem;">
+                    <img class="logo-preview-footer" src="<?= esc(base_url(setting('logo_footer', setting('logo_nav')))) ?>" alt="">
                 </div>
                 <input class="form-control" type="file" name="logo_footer" accept="image/*">
             </div>
@@ -332,7 +332,7 @@ function tab_link(string $tab, string $icon, string $label, string $active): voi
             </div>
             <div class="col-12">
                 <label class="form-label">Hero Background Image</label>
-                <div class="mb-2"><img src="<?= esc(base_url(setting('hero_image'))) ?>" alt="" style="height: 90px; border-radius: .5rem;"></div>
+                <div class="mb-2"><img class="hero-preview" src="<?= esc(base_url(setting('hero_image'))) ?>" alt=""></div>
                 <input class="form-control" type="file" name="hero_image" accept="image/*">
             </div>
         </div>
@@ -439,7 +439,7 @@ $siteUrlSet = setting('site_url') !== '';
         <?= csrf_field() ?>
         <input type="hidden" name="section" value="seo">
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Site address &amp; indexing</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Site address &amp; indexing</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-6">
                 <label class="form-label">Site URL <span class="text-danger">*</span></label>
@@ -470,7 +470,7 @@ $siteUrlSet = setting('site_url') !== '';
             </div>
             <div class="col-12">
                 <label class="form-label">Extra robots.txt Lines <small class="text-muted fw-normal">(one directive per line — appended to the generated file)</small></label>
-                <textarea class="form-control font-monospace" name="seo_robots_extra" rows="3" style="font-size:.85rem;"><?= esc(setting('seo_robots_extra')) ?></textarea>
+                <textarea class="form-control font-monospace code-input" name="seo_robots_extra" rows="3"><?= esc(setting('seo_robots_extra')) ?></textarea>
                 <div class="form-text">
                     Live files:
                     <a href="<?= esc(base_url('robots.txt')) ?>" target="_blank" rel="noopener">robots.txt</a> ·
@@ -479,7 +479,7 @@ $siteUrlSet = setting('site_url') !== '';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Verification &amp; analytics</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Verification &amp; analytics</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-3">
                 <label class="form-label">Google Search Console</label>
@@ -500,7 +500,7 @@ $siteUrlSet = setting('site_url') !== '';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Business details for Google</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Business details for Google</h6>
         <p class="text-muted small">These feed the LocalBusiness structured data that powers the Google business panel and map results.</p>
         <div class="row g-3 mb-4">
             <div class="col-md-4">
@@ -581,7 +581,7 @@ $siteUrlSet = setting('site_url') !== '';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Review stars</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Review stars</h6>
         <div class="alert alert-warning">
             <div class="form-check form-switch mb-2">
                 <input class="form-check-input" type="checkbox" id="seo-agg" name="seo_aggregate_rating" value="1"<?= setting('seo_aggregate_rating') === '1' ? ' checked' : '' ?>>

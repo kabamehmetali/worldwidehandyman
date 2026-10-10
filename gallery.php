@@ -24,7 +24,7 @@ $schemas         = $images ? [[
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner" style="background-image: url('<?= esc(base_url('assets/img/work-modern-kitchen.jpg')) ?>');">
+<section class="page-banner gallery-banner">
     <div class="container">
         <h1>Gallery</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

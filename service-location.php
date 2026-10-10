@@ -71,7 +71,8 @@ if ($pair['faq_q'] !== '' && trim($pair['faq_a']) !== '') {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url($heroImage)) ?>');">
+<section class="page-banner page-banner-portrait">
+    <img class="banner-img" src="<?= esc(base_url($heroImage)) ?>" alt="" fetchpriority="high">
     <div class="container">
         <h1><?= esc($pair['h1'] !== '' ? $pair['h1'] : $name . ' in ' . $city) ?></h1>
         <?= breadcrumb_html($breadcrumbs) ?>

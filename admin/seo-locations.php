@@ -41,7 +41,7 @@ $published = count(array_filter($locations, static fn ($l) => (int) $l['is_publi
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead><tr>
-                    <th style="width:70px;">Order</th><th>Location</th><th>Region</th>
+                    <th class="col-order">Order</th><th>Location</th><th>Region</th>
                     <th>Tier</th><th>Sub-pages</th><th>Live</th><th class="text-end">Actions</th>
                 </tr></thead>
                 <tbody>

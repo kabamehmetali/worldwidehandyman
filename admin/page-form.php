@@ -118,7 +118,7 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="col-12">
                 <label class="form-label" for="p-content">Content (HTML allowed)</label>
-                <textarea class="form-control font-monospace" id="p-content" name="content" rows="16" style="font-size: .85rem;"><?= esc($page['content']) ?></textarea>
+                <textarea class="form-control font-monospace code-input" id="p-content" name="content" rows="16"><?= esc($page['content']) ?></textarea>
                 <div class="form-text">
                     You can use full HTML and Bootstrap 5 classes. Useful patterns:
                     <code>&lt;p class="lead"&gt;intro&lt;/p&gt;</code>,

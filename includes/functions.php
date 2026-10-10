@@ -19,6 +19,60 @@ function base_url(string $path = ''): string
 }
 
 /**
+ * URL of a stylesheet or script inside the site, cache-busted with the file's
+ * modification time (the .htaccess gives CSS and JS a one-year TTL).
+ *
+ * Every stylesheet, script and font is served from this site — nothing loads
+ * from a CDN. Production sends a Content-Security-Policy that only allows
+ * same-origin assets ('self'), so a third-party URL would simply be blocked.
+ */
+function asset_url(string $path): string
+{
+    return base_url($path) . '?v=' . (int) @filemtime(APP_ROOT . '/' . $path);
+}
+
+/**
+ * Brand colours from Admin → Settings → Colors, as CSS custom properties.
+ * Anything that is not a plain hex colour falls back to the stylesheet default.
+ */
+function theme_colors(): array
+{
+    $defaults = [
+        '--ww-navy'       => ['color_primary', '#10203F'],
+        '--ww-navy-dark'  => ['color_primary_dark', '#0A1428'],
+        '--ww-gold'       => ['color_accent', '#F5A800'],
+        '--ww-gold-light' => ['color_accent_light', '#FFC933'],
+        '--ww-red'        => ['color_red', '#D2382C'],
+        '--ww-bg-light'   => ['color_bg_light', '#F5F7FB'],
+    ];
+
+    $colors = [];
+    foreach ($defaults as $property => [$key, $default]) {
+        $value = setting($key, $default);
+        $colors[$property] = preg_match('/^#[0-9a-fA-F]{3,8}$/', $value) ? $value : $default;
+    }
+    return $colors;
+}
+
+/**
+ * URL of the stylesheet that applies the admin-chosen colours, or '' while
+ * they all still match the defaults already in assets/css/styles.css.
+ *
+ * The colours used to be written into a <style> block in the page head, which
+ * a 'self'-only Content-Security-Policy discards. The ?v= hash changes with
+ * the colours, so the stylesheet can be cached until they are edited.
+ */
+function theme_css_url(): string
+{
+    $colors = theme_colors();
+    $stock  = ['#10203F', '#0A1428', '#F5A800', '#FFC933', '#D2382C', '#F5F7FB'];
+    if (array_map('strtoupper', array_values($colors)) === $stock) {
+        return '';
+    }
+    return base_url('assets/css/theme.php') . '?v=' . substr(md5(implode('', $colors)), 0, 10);
+}
+
+/**
  * Public base path — the URL prefix this site is served under.
  *
  * Worked out by comparing the running script's URL path (SCRIPT_NAME) with its

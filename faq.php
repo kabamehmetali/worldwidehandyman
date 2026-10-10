@@ -17,7 +17,7 @@ $schemas         = [schema_faq(array_map(static fn ($f) => [
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait faq-banner" style="background-image: url('<?= esc(base_url('assets/img/faq-hero.png')) ?>');">
+<section class="page-banner page-banner-portrait faq-banner">
     <div class="container">
         <h1>Frequently Asked Questions</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

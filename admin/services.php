@@ -36,7 +36,7 @@ $services = db()->query('SELECT * FROM services ORDER BY sort_order ASC, id ASC'
     <?php if ($services): ?>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-                <thead><tr><th style="width:70px;">Order</th><th>Icon</th><th>Service</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
+                <thead><tr><th class="col-order">Order</th><th>Icon</th><th>Service</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 <?php foreach ($services as $i => $s): ?>
                     <tr class="<?= $s['is_active'] ? '' : 'opacity-50' ?>">

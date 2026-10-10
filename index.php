@@ -22,7 +22,7 @@ if ($seoServices) {
 require __DIR__ . '/includes/header.php';
 
 $services = db()->query(
-    'SELECT * FROM services WHERE is_active = 1 ORDER BY sort_order ASC, id ASC LIMIT 8'
+    'SELECT * FROM services WHERE is_active = 1 ORDER BY sort_order ASC, id ASC LIMIT 12'
 )->fetchAll();
 $testimonials = db()->query(
     'SELECT * FROM testimonials WHERE is_active = 1 ORDER BY sort_order ASC, id ASC'
@@ -33,7 +33,8 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
 ?>
 
 <!-- Hero -->
-<header class="hero" style="background-image: url('<?= esc(base_url(setting('hero_image'))) ?>');">
+<header class="hero">
+    <img class="banner-img" src="<?= esc(base_url(setting('hero_image'))) ?>" alt="" fetchpriority="high">
     <div class="container hero-inner">
         <div class="hero-content">
             <h1 class="hero-title"><?= $heroTitle ?></h1>
@@ -102,12 +103,26 @@ $heroTitle = strip_tags(setting('hero_title'), '<span>');
         </div>
         <div class="row g-4">
             <?php foreach ($services as $service): ?>
+                <?php
+                /* A card links through to its landing page when one is set, so the
+                   homepage feeds the service pages rather than dead-ending. */
+                $svcLink = ($service['seo_slug'] ?? '') !== '' ? service_page_url($service['seo_slug']) : '';
+                ?>
                 <div class="col-md-6 col-lg-3 reveal">
-                    <div class="service-card">
-                        <div class="service-icon"><i class="<?= esc($service['icon']) ?>"></i></div>
-                        <h5><?= esc($service['title']) ?></h5>
-                        <p><?= esc($service['short_desc']) ?></p>
-                    </div>
+                    <?php if ($svcLink !== ''): ?>
+                        <a class="service-card service-card-link h-100 d-block" href="<?= esc($svcLink) ?>">
+                            <div class="service-icon"><i class="<?= esc($service['icon']) ?>"></i></div>
+                            <h5><?= esc($service['title']) ?></h5>
+                            <p><?= esc($service['short_desc']) ?></p>
+                            <span class="sc-more">Learn more <i class="fa-solid fa-arrow-right"></i></span>
+                        </a>
+                    <?php else: ?>
+                        <div class="service-card h-100">
+                            <div class="service-icon"><i class="<?= esc($service['icon']) ?>"></i></div>
+                            <h5><?= esc($service['title']) ?></h5>
+                            <p><?= esc($service['short_desc']) ?></p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         </div>

@@ -732,7 +732,7 @@ function seo_not_found(string $heading = 'Page Not Found', string $message = '')
     <section class="section text-center">
         <div class="container py-5">
             <img src="<?= esc(base_url('assets/img/cartoon-workshop.jpg')) ?>" alt=""
-                 style="max-width: 420px; border-radius: 1rem;" class="mb-4 shadow">
+                 class="notfound-art mb-4 shadow">
             <h1 class="section-title"><?= esc($heading) ?></h1>
             <p class="section-sub mx-auto">
                 <?= esc($message !== '' ? $message : 'The page you are looking for does not exist or is no longer published.') ?>

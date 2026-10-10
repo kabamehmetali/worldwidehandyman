@@ -1,7 +1,8 @@
 <?php
 /** Shared full-width call to action shown directly above every public footer. */
 ?>
-<section class="cta-band" style="background-image: url('<?= esc(base_url(setting('cta_band_image'))) ?>');">
+<section class="cta-band">
+    <img class="banner-img" src="<?= esc(base_url(setting('cta_band_image'))) ?>" alt="">
     <div class="container">
         <div class="row justify-content-lg-end">
             <div class="col-12 col-lg-6 text-center">

@@ -60,7 +60,7 @@ $mapKey = setting('google_maps_api_key');
 $mapQuery = setting('map_query', 'Toronto, ON, Canada');
 ?>
 
-<section class="page-banner page-banner-portrait contact-banner" style="background-image: url('<?= esc(base_url('assets/img/contact-hero.png')) ?>');">
+<section class="page-banner page-banner-portrait contact-banner">
     <div class="container">
         <h1>Contact Me</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

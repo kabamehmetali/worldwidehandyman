@@ -21,7 +21,7 @@ $schemas         = [[
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait about-banner" style="background-image: url('<?= esc(base_url('assets/img/about-hero.png')) ?>');">
+<section class="page-banner page-banner-portrait about-banner">
     <div class="container">
         <h1>About Me</h1>
         <?= breadcrumb_html($breadcrumbs) ?>
@@ -113,7 +113,7 @@ require __DIR__ . '/includes/header.php';
             <span class="value-pill"><i class="fa-solid fa-house-chimney"></i> Respect for Your Property</span>
             <span class="value-pill"><i class="fa-solid fa-star"></i> Customer Satisfaction</span>
         </div>
-        <div class="about-strip mt-5 reveal" style="background-image: url('<?= esc(base_url('assets/img/hero-about.jpg')) ?>');" role="img" aria-label="Sercan Yildirim in front of the Toronto skyline"></div>
+        <div class="about-strip mt-5 reveal" role="img" aria-label="Sercan Yildirim in front of the Toronto skyline"></div>
     </div>
 </section>
 

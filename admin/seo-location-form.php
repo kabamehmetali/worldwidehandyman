@@ -122,7 +122,7 @@ require __DIR__ . '/includes/header.php';
     <form method="post">
         <?= csrf_field() ?>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Identity</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Identity</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <label class="form-label" for="l-name">Location Name *</label>
@@ -148,7 +148,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Search Listing</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Search Listing</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-6">
                 <label class="form-label" for="l-mt">Meta Title <small class="text-muted fw-normal">(aim for 30–50 characters — “ | <?= esc(setting('site_name')) ?>” is added automatically)</small></label>
@@ -166,7 +166,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Local Detail</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Local Detail</h6>
         <div class="row g-3 mb-4">
             <div class="col-md-4">
                 <label class="form-label" for="l-lat">Latitude</label>
@@ -199,7 +199,7 @@ require __DIR__ . '/includes/header.php';
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">Page Copy</h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">Page Copy</h6>
         <div class="row g-3 mb-4">
             <div class="col-12">
                 <label class="form-label" for="l-intro">Intro <small class="text-muted fw-normal">(plain text — leave a blank line between paragraphs)</small></label>
@@ -215,12 +215,12 @@ require __DIR__ . '/includes/header.php';
             </div>
             <div class="col-12">
                 <label class="form-label" for="l-body">Main Body <small class="text-muted fw-normal">(HTML — only &lt;h2&gt; &lt;h3&gt; &lt;p&gt; &lt;ul&gt; &lt;li&gt; &lt;strong&gt; are rendered)</small></label>
-                <textarea class="form-control font-monospace" id="l-body" name="body_html" rows="16" style="font-size:.85rem;"><?= esc($row['body_html']) ?></textarea>
+                <textarea class="form-control font-monospace code-input" id="l-body" name="body_html" rows="16"><?= esc($row['body_html']) ?></textarea>
                 <div class="form-text">Aim for 450–650 words of genuinely local detail. Thin or duplicated copy is what gets these pages ignored by Google.</div>
             </div>
         </div>
 
-        <h6 class="text-uppercase text-muted mb-3" style="letter-spacing:.08em;">FAQs <small class="text-muted fw-normal text-lowercase">(marked up as FAQ structured data)</small></h6>
+        <h6 class="form-section-title text-uppercase text-muted mb-3">FAQs <small class="text-muted fw-normal text-lowercase">(marked up as FAQ structured data)</small></h6>
         <div id="faq-rows" class="mb-3">
             <?php foreach ($faqRows as $faq): ?>
                 <div class="row g-2 mb-2 faq-row">
@@ -244,25 +244,5 @@ require __DIR__ . '/includes/header.php';
         </div>
     </form>
 </div>
-
-<script>
-(function () {
-    'use strict';
-    document.querySelectorAll('[data-counter]').forEach(function (field) {
-        var out = document.getElementById(field.getAttribute('data-counter'));
-        field.addEventListener('input', function () { out.textContent = field.value.length; });
-    });
-    var wrap = document.getElementById('faq-rows');
-    document.getElementById('faq-add').addEventListener('click', function () {
-        var row = wrap.querySelector('.faq-row').cloneNode(true);
-        row.querySelectorAll('input, textarea').forEach(function (f) { f.value = ''; });
-        wrap.appendChild(row);
-    });
-    wrap.addEventListener('click', function (e) {
-        var btn = e.target.closest('.faq-remove');
-        if (btn && wrap.querySelectorAll('.faq-row').length > 1) { btn.closest('.faq-row').remove(); }
-    });
-}());
-</script>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

@@ -67,7 +67,7 @@ $serviceOptions = db()->query(
 )->fetchAll(PDO::FETCH_COLUMN);
 ?>
 
-<section class="page-banner page-banner-portrait quote-banner" style="background-image: url('<?= esc(base_url('assets/img/quote-hero-v2.png')) ?>');">
+<section class="page-banner page-banner-portrait quote-banner">
     <div class="container">
         <h1>Get a Free Quote</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

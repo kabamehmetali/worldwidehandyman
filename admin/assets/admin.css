@@ -245,6 +245,20 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Poppins', sans-serif; color: var(--ww-nav
     color: transparent;
 }
 
+/* Small one-off rules -----------------------------------------------------
+   These were style="" attributes; the site's Content-Security-Policy discards
+   inline styles, so they live here as classes. */
+.form-section-title { letter-spacing: .08em; }
+.col-order { width: 70px; }
+.col-subject { max-width: 320px; }
+.col-quote { max-width: 340px; }
+.code-input { font-size: .85rem; }
+.unread-dot { font-size: .45rem; vertical-align: middle; }
+.logo-preview { height: 48px; }
+.logo-preview-dark { background: var(--ww-navy); }
+.logo-preview-footer { height: 64px; border-radius: .4rem; }
+.hero-preview { height: 90px; border-radius: .5rem; }
+
 /* Responsive ------------------------------------------------------------- */
 @media (max-width: 991.98px) {
     .admin-sidebar {

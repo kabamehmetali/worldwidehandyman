@@ -44,7 +44,7 @@ $published = count(array_filter($services, static fn ($s) => (int) $s['is_publis
         <div class="table-responsive">
             <table class="table table-hover align-middle">
                 <thead><tr>
-                    <th style="width:70px;">Order</th><th>Icon</th><th>Service</th>
+                    <th class="col-order">Order</th><th>Icon</th><th>Service</th>
                     <th>Pillar</th><th>City pages</th><th>Live</th><th class="text-end">Actions</th>
                 </tr></thead>
                 <tbody>

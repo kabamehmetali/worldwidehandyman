@@ -32,7 +32,7 @@ $links = db()->query('SELECT * FROM nav_links ORDER BY sort_order ASC, id ASC')-
     <?php if ($links): ?>
         <div class="table-responsive">
             <table class="table table-hover align-middle">
-                <thead><tr><th style="width:70px;">Order</th><th>Label</th><th>URL</th><th>Style</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
+                <thead><tr><th class="col-order">Order</th><th>Label</th><th>URL</th><th>Style</th><th>Visible</th><th class="text-end">Actions</th></tr></thead>
                 <tbody>
                 <?php foreach ($links as $i => $l): ?>
                     <tr class="<?= $l['is_visible'] ? '' : 'opacity-50' ?>">

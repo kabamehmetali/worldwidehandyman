@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-"Worldwide Handyman" — marketing site + admin panel for a GTA handyman business (sole proprietor: Sercan). Plain PHP 8 / MySQL / Bootstrap 5 (CDN), no framework, no composer, no build step. Runs on XAMPP.
+"Worldwide Handyman" — marketing site + admin panel for a GTA handyman business (sole proprietor: Sercan). Plain PHP 8 / MySQL / Bootstrap 5 (self-hosted in `assets/vendor/`), no framework, no composer, no build step. Runs on XAMPP.
 
 - Frontend: `http://localhost/Worldwidehandyman/`
 - Admin: `http://localhost/Worldwidehandyman/admin/` (login: `admin` / `password` — change in Settings → Account)
@@ -32,8 +32,8 @@ SEO landing-page tables: `seo_locations`, `seo_services`, `seo_service_locations
 - `includes/db.php` — `db()` PDO singleton (ERRMODE_EXCEPTION, FETCH_ASSOC).
 - `includes/functions.php` — `esc()`, `base_url()`, `setting($key)` (per-request cached), `settings_save()`, `nav_links()`, `is_nav_active()`, CSRF (`csrf_field()`/`csrf_check()`), flash messages, `redirect()`, `phone_href()`.
 - `includes/twilio.php` — `twilio_send_sms()` (plain cURL to Twilio REST API, no SDK), `twilio_notify_quote()` (never throws; failure recorded on the quote row, never blocks the customer).
-- `includes/header.php` / `footer.php` — shared layout; header emits CSS variables from the color settings, so admin color changes restyle the whole site.
-- **Mobile navigation is custom, not Bootstrap collapse.** Below 992px `#mainNav` (`.site-nav-panel`) becomes a `position: fixed; inset: 0` overlay driven by a `body.nav-open` class; `#navBurger`'s three spans morph into an X. Links carry `style="--i: N"` for the staggered reveal. Logic lives in the "Full-screen mobile navigation" block of `assets/js/scripts.js` (Escape, link-click close, Tab focus trap, auto-close on resize ≥992px). Do not re-add `data-bs-toggle="collapse"` or the `.navbar-collapse` class.
+- `includes/header.php` / `footer.php` — shared layout; the header links `assets/css/theme.php` (CSS variables built from the color settings) once a colour differs from the defaults, so admin color changes restyle the whole site.
+- **Mobile navigation is custom, not Bootstrap collapse.** Below 992px `#mainNav` (`.site-nav-panel`) becomes a `position: fixed; inset: 0` overlay driven by a `body.nav-open` class; `#navBurger`'s three spans morph into an X. The script sets `--i` on each `.nav-item` for the staggered reveal. Logic lives in the "Full-screen mobile navigation" block of `assets/js/scripts.js` (Escape, link-click close, Tab focus trap, auto-close on resize ≥992px). Do not re-add `data-bs-toggle="collapse"` or the `.navbar-collapse` class.
 - Frontend pages at root require the header/footer; `quote.php` and `contact.php` handle their own POST (CSRF + honeypot field `website`) before rendering.
 - `/pages/{slug}` renders rows from `pages`; old `page.php?slug=x` URLs permanently redirect when clean URLs are available. Content is trusted admin-authored HTML (rendered unescaped by design).
 
@@ -96,6 +96,17 @@ Admin → **SEO** has Locations, Service Pages and Service × City, plus a **Set
 ### Content rules
 
 Landing-page copy is written in **first person singular** ("I", never "we" or "our team") because the business is a sole proprietor. It must never claim licensed / insured / bonded / WSIB / certified / award-winning status, never quote prices, and never offer work requiring a licensed trade (panel wiring, gas, structural, roofing, HVAC) — swapping existing fixtures is fine, anything past that gets referred on. Canadian English throughout.
+
+## Assets & Content-Security-Policy
+
+Production (worldwidehandyman.ca) sends `Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; …`. The header is set on the server, not in this repo's `.htaccess`. Anything it does not allow is silently dropped by the browser, so:
+
+- **No CDN links.** Bootstrap 5.3.3, Font Awesome 6.5.2 (CSS + webfonts) and the Poppins / Inter fonts live in `assets/vendor/` and are linked with `asset_url()`, which adds the `?v=filemtime` cache-buster.
+- **No `<style>` blocks and no `style=""` attributes** — use a class in `assets/css/styles.css` or `admin/assets/admin.css`. Setting a style from JavaScript (`el.style…`) is allowed.
+- **No inline `<script>` and no `onclick=`-style handlers** — public code goes in `assets/js/scripts.js`, admin code in `admin/assets/admin.js`. JSON-LD blocks are data, not script, and are unaffected.
+- Banner photos: a fixed banner names its photo in `styles.css` (`.page-banner.faq-banner { background-image … }`); a banner whose photo is chosen at runtime (homepage hero, CTA band, landing-page hero) carries it as `<img class="banner-img">`.
+- Admin colour settings reach the page through `assets/css/theme.php` (see `theme_css_url()`), linked only when a colour differs from the defaults in `styles.css`.
+- Still blocked by the policy and not fixable in code: the Google Maps iframe on `contact.php` (needs `frame-src https://www.google.com`) and GTM / GA4 (need `script-src` / `connect-src` entries for Google).
 
 ## Conventions
 

@@ -20,7 +20,7 @@ $breadcrumbs = [['label' => 'Home', 'url' => ''], ['label' => $page['title']]];
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait" style="background-image: url('<?= esc(base_url('assets/img/hero-about.jpg')) ?>');">
+<section class="page-banner page-banner-portrait custom-page-banner">
     <div class="container">
         <h1><?= esc($page['title']) ?></h1>
         <?= breadcrumb_html($breadcrumbs) ?>

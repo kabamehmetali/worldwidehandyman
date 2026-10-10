@@ -33,7 +33,7 @@ if ($totalAreas) {
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-banner page-banner-portrait service-areas-banner" style="background-image: url('<?= esc(base_url('assets/img/services-hero-koltuk.png')) ?>');">
+<section class="page-banner page-banner-portrait service-areas-banner">
     <div class="container">
         <h1>Handyman Service Areas</h1>
         <?= breadcrumb_html($breadcrumbs) ?>

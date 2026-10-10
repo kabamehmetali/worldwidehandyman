@@ -340,6 +340,31 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     .nav-panel-foot { transform: none; }
 }
 
+/* Banner photos ----------------------------------------------------------
+   Production sends a Content-Security-Policy that discards style=""
+   attributes, so a banner never sets its photo inline.
+
+   A banner with a fixed photo names it in this file (see "Page banner").
+   A banner whose photo is chosen at runtime — the homepage hero and the CTA
+   band (both settings), and each landing page's own hero image — carries it
+   as an <img class="banner-img"> instead. That image is laid out to behave
+   exactly like `background-size: cover`; its object-position mirrors the
+   background-position the banner would otherwise use. */
+.hero, .cta-band, .page-banner {
+    /* Own stacking context, so the photo's z-index: -1 puts it above the
+       banner's background colour but under the ::before gradient. */
+    isolation: isolate;
+}
+.banner-img {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+}
+
 /* Hero ------------------------------------------------------------------- */
 .hero {
     position: relative;
@@ -354,6 +379,7 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     background-position: left top;
     color: #fff;
 }
+.hero > .banner-img { object-position: left top; }
 .hero::before {
     content: '';
     position: absolute;
@@ -733,6 +759,15 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .page-banner .breadcrumb-item, .page-banner .breadcrumb-item a { color: rgba(255,255,255,.75); font-size: .9rem; }
 .page-banner .breadcrumb-item.active { color: var(--ww-gold-light); }
 .page-banner .breadcrumb-item a:hover { color: var(--ww-gold-light); }
+/* The photo behind each fixed banner. */
+.page-banner.gallery-banner { background-image: url('../img/work-modern-kitchen.jpg'); }
+.page-banner.services-banner { background-image: url('../img/service-areas-hero-painting.png'); }
+.page-banner.service-areas-banner { background-image: url('../img/services-hero-koltuk.png'); }
+.page-banner.about-banner { background-image: url('../img/about-hero.png'); }
+.page-banner.faq-banner { background-image: url('../img/faq-hero.png'); }
+.page-banner.contact-banner { background-image: url('../img/contact-hero.png'); }
+.page-banner.quote-banner { background-image: url('../img/quote-hero-v2.png'); }
+.page-banner.custom-page-banner { background-image: url('../img/hero-about.jpg'); }
 /* Services hero: the painting scene retains clear title space on the left. */
 .page-banner.services-banner {
     background-color: var(--ww-navy-dark);
@@ -890,6 +925,7 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .value-pill i { color: var(--ww-gold); }
 .about-strip {
     height: 340px;
+    background-image: url('../img/hero-about.jpg');
     background-size: cover;
     background-position: center 25%;
     border-radius: var(--ww-radius);
@@ -1064,6 +1100,9 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
 .area-card:hover { transform: translateY(-3px); }
 .area-card i { color: var(--ww-gold); margin-right: .4rem; }
 
+/* 404 page --------------------------------------------------------------- */
+.notfound-art { max-width: 420px; border-radius: 1rem; }
+
 /* Footer ----------------------------------------------------------------- */
 .site-footer {
     background:
@@ -1196,6 +1235,7 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
         background-position: 22% top;
         padding-bottom: 3.8rem;
     }
+    .hero > .banner-img { object-position: 22% top; }
     .hero::before {
         background: linear-gradient(180deg,
             rgba(10, 20, 40, .12) 0%,
@@ -1224,6 +1264,7 @@ body.nav-open .nav-burger span:nth-child(3) { transform: translateY(-7.5px) rota
     .site-navbar.scrolled .navbar-brand img { height: 40px; }
     .site-navbar.scrolled .navbar-brand .brand-icon { height: 44px; }
     .hero { background-position: 28% top; }
+    .hero > .banner-img { object-position: 28% top; }
     .hero .btn-lg { padding: .65rem 1.25rem; font-size: 1rem; }
     .gallery-item img { height: 200px; }
     .about-badge { right: 8px; bottom: -14px; padding: .8rem 1rem; }

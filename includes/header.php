@@ -85,14 +85,14 @@ foreach ($schemas as $extraNode) {
 
     <link rel="icon" type="image/png" href="<?= esc(base_url(setting('logo_icon'))) ?>">
     <link rel="apple-touch-icon" href="<?= esc(base_url(setting('logo_icon'))) ?>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
-    <link href="<?= esc(base_url('assets/css/styles.css')) ?>?v=<?= @filemtime(APP_ROOT . '/assets/css/styles.css') ?>" rel="stylesheet">
+    <!-- Fonts, Bootstrap 5.3.3 and Font Awesome 6.5.2 are self-hosted in assets/vendor/ -->
+    <link href="<?= esc(asset_url('assets/vendor/fonts/fonts.css')) ?>" rel="stylesheet">
+    <link href="<?= esc(asset_url('assets/vendor/bootstrap/css/bootstrap.min.css')) ?>" rel="stylesheet">
+    <link href="<?= esc(asset_url('assets/vendor/fontawesome/css/all.min.css')) ?>" rel="stylesheet">
+    <link href="<?= esc(asset_url('assets/css/styles.css')) ?>" rel="stylesheet">
+<?php if (theme_css_url() !== ''): ?>
+    <link href="<?= esc(theme_css_url()) ?>" rel="stylesheet">
+<?php endif; ?>
 
     <?= json_ld_block($schemaGraph) ?>
 
@@ -106,21 +106,11 @@ foreach ($schemas as $extraNode) {
     <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
     gtag('js',new Date());gtag('config','<?= esc(setting('ga4_id')) ?>');</script>
 <?php endif; ?>
-    <style>
-        :root {
-            --ww-navy: <?= esc(setting('color_primary', '#10203F')) ?>;
-            --ww-navy-dark: <?= esc(setting('color_primary_dark', '#0A1428')) ?>;
-            --ww-gold: <?= esc(setting('color_accent', '#F5A800')) ?>;
-            --ww-gold-light: <?= esc(setting('color_accent_light', '#FFC933')) ?>;
-            --ww-red: <?= esc(setting('color_red', '#D2382C')) ?>;
-            --ww-bg-light: <?= esc(setting('color_bg_light', '#F5F7FB')) ?>;
-        }
-    </style>
 </head>
 <body>
 <?php if (setting('gtm_id') !== ''): ?>
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=<?= rawurlencode(setting('gtm_id')) ?>"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    height="0" width="0" class="d-none"></iframe></noscript>
 <?php endif; ?>
 
 <!-- Top bar -->
@@ -162,15 +152,15 @@ foreach ($schemas as $extraNode) {
             </div>
 
             <ul class="navbar-nav ms-auto align-items-lg-center">
-                <?php foreach (nav_links() as $i => $link): ?>
+                <?php foreach (nav_links() as $link): ?>
                     <?php if ($link['is_cta']): ?>
-                        <li class="nav-item nav-item-cta ms-lg-3 mt-2 mt-lg-0" style="--i: <?= (int) $i ?>;">
+                        <li class="nav-item nav-item-cta ms-lg-3 mt-2 mt-lg-0">
                             <a class="btn btn-gold btn-nav-cta" href="<?= esc(base_url($link['url'])) ?>"<?= $link['open_new_tab'] ? ' target="_blank" rel="noopener"' : '' ?>>
                                 <i class="fa-solid fa-file-signature me-1"></i> <?= esc($link['label']) ?>
                             </a>
                         </li>
                     <?php else: ?>
-                        <li class="nav-item" style="--i: <?= (int) $i ?>;">
+                        <li class="nav-item">
                             <a class="nav-link<?= is_nav_active($link['url']) ? ' active' : '' ?>"
                                href="<?= esc(base_url($link['url'])) ?>"<?= $link['open_new_tab'] ? ' target="_blank" rel="noopener"' : '' ?>>
                                 <span><?= esc($link['label']) ?></span>
